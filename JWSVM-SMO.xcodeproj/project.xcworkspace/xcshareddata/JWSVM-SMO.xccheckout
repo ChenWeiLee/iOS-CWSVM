@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>93DB17EA-BADC-4AE9-9400-442DA1F6F564</string>
+	<key>IDESourceControlProjectName</key>
+	<string>JWSVM-SMO</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>210CB819005DFFF42A87C931152C57B942239155</key>
+		<string>gitlab.hq.hiiir:ecs_gropus/ecs-ios.git</string>
+		<key>25FB64375B42FF9AD92EF8C2B752F58F04CDDF08</key>
+		<string>https://github.com/Justin-li/CWLinearSVM.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>JWSVM-SMO.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>210CB819005DFFF42A87C931152C57B942239155</key>
+		<string>../../..</string>
+		<key>25FB64375B42FF9AD92EF8C2B752F58F04CDDF08</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Justin-li/CWLinearSVM.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>25FB64375B42FF9AD92EF8C2B752F58F04CDDF08</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>210CB819005DFFF42A87C931152C57B942239155</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>25FB64375B42FF9AD92EF8C2B752F58F04CDDF08</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LinearSVM</string>
+		</dict>
+	</array>
+</dict>
+</plist>
