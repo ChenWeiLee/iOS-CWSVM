@@ -26,8 +26,8 @@
     
     
     
-    [inputXAry addObjectsFromArray:@[@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0]]];
-    [inputYAry addObjectsFromArray:@[@-1,@-1,@1,@1]];
+    [inputXAry addObjectsFromArray:@[@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0],@[@4,@0]]];
+    [inputYAry addObjectsFromArray:@[@-1,@-1,@1,@1,@1]];
     
     [obj_SMO printW_And_b];
     [obj_SMO startSMO:inputXAry OutputYAry:inputYAry CValue:1];
