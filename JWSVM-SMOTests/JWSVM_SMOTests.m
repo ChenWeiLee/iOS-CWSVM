@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "JWSMO_Object.h"
 
 @interface JWSVM_SMOTests : XCTestCase
 
