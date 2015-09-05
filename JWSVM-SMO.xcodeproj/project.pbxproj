@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A111B9AD7AF00F420D3 /* main.m */; };
+		ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */; };
+		ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A171B9AD7AF00F420D3 /* ViewController.m */; };
+		ECFA6A1B1B9AD7AF00F420D3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */; };
+		ECFA6A1D1B9AD7AF00F420D3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */; };
+		ECFA6A201B9AD7AF00F420D3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */; };
+		ECFA6A2C1B9AD7B000F420D3 /* JWSVM_SMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A2B1B9AD7B000F420D3 /* JWSVM_SMOTests.m */; };
+		ECFA6A371B9AD88300F420D3 /* JWSMO_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECFA6A261B9AD7B000F420D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ECFA6A041B9AD7AF00F420D3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECFA6A0B1B9AD7AF00F420D3;
+			remoteInfo = "JWSVM-SMO";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		ECFA6A0C1B9AD7AF00F420D3 /* JWSVM-SMO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JWSVM-SMO.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECFA6A101B9AD7AF00F420D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ECFA6A111B9AD7AF00F420D3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ECFA6A131B9AD7AF00F420D3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		ECFA6A161B9AD7AF00F420D3 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		ECFA6A171B9AD7AF00F420D3 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		ECFA6A1A1B9AD7AF00F420D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		ECFA6A1F1B9AD7AF00F420D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		ECFA6A251B9AD7B000F420D3 /* JWSVM-SMOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "JWSVM-SMOTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECFA6A2A1B9AD7B000F420D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ECFA6A2B1B9AD7B000F420D3 /* JWSVM_SMOTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JWSVM_SMOTests.m; sourceTree = "<group>"; };
+		ECFA6A351B9AD88300F420D3 /* JWSMO_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JWSMO_Object.h; sourceTree = "<group>"; };
+		ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JWSMO_Object.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ECFA6A091B9AD7AF00F420D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECFA6A221B9AD7B000F420D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ECFA6A031B9AD7AF00F420D3 = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A0E1B9AD7AF00F420D3 /* JWSVM-SMO */,
+				ECFA6A281B9AD7B000F420D3 /* JWSVM-SMOTests */,
+				ECFA6A0D1B9AD7AF00F420D3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ECFA6A0D1B9AD7AF00F420D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A0C1B9AD7AF00F420D3 /* JWSVM-SMO.app */,
+				ECFA6A251B9AD7B000F420D3 /* JWSVM-SMOTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECFA6A0E1B9AD7AF00F420D3 /* JWSVM-SMO */ = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A131B9AD7AF00F420D3 /* AppDelegate.h */,
+				ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */,
+				ECFA6A161B9AD7AF00F420D3 /* ViewController.h */,
+				ECFA6A171B9AD7AF00F420D3 /* ViewController.m */,
+				ECFA6A351B9AD88300F420D3 /* JWSMO_Object.h */,
+				ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */,
+				ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */,
+				ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */,
+				ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */,
+				ECFA6A0F1B9AD7AF00F420D3 /* Supporting Files */,
+			);
+			path = "JWSVM-SMO";
+			sourceTree = "<group>";
+		};
+		ECFA6A0F1B9AD7AF00F420D3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A101B9AD7AF00F420D3 /* Info.plist */,
+				ECFA6A111B9AD7AF00F420D3 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		ECFA6A281B9AD7B000F420D3 /* JWSVM-SMOTests */ = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A2B1B9AD7B000F420D3 /* JWSVM_SMOTests.m */,
+				ECFA6A291B9AD7B000F420D3 /* Supporting Files */,
+			);
+			path = "JWSVM-SMOTests";
+			sourceTree = "<group>";
+		};
+		ECFA6A291B9AD7B000F420D3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ECFA6A2A1B9AD7B000F420D3 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ECFA6A0B1B9AD7AF00F420D3 /* JWSVM-SMO */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECFA6A2F1B9AD7B000F420D3 /* Build configuration list for PBXNativeTarget "JWSVM-SMO" */;
+			buildPhases = (
+				ECFA6A081B9AD7AF00F420D3 /* Sources */,
+				ECFA6A091B9AD7AF00F420D3 /* Frameworks */,
+				ECFA6A0A1B9AD7AF00F420D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JWSVM-SMO";
+			productName = "JWSVM-SMO";
+			productReference = ECFA6A0C1B9AD7AF00F420D3 /* JWSVM-SMO.app */;
+			productType = "com.apple.product-type.application";
+		};
+		ECFA6A241B9AD7B000F420D3 /* JWSVM-SMOTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECFA6A321B9AD7B000F420D3 /* Build configuration list for PBXNativeTarget "JWSVM-SMOTests" */;
+			buildPhases = (
+				ECFA6A211B9AD7B000F420D3 /* Sources */,
+				ECFA6A221B9AD7B000F420D3 /* Frameworks */,
+				ECFA6A231B9AD7B000F420D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECFA6A271B9AD7B000F420D3 /* PBXTargetDependency */,
+			);
+			name = "JWSVM-SMOTests";
+			productName = "JWSVM-SMOTests";
+			productReference = ECFA6A251B9AD7B000F420D3 /* JWSVM-SMOTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ECFA6A041B9AD7AF00F420D3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = Enoch;
+				TargetAttributes = {
+					ECFA6A0B1B9AD7AF00F420D3 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					ECFA6A241B9AD7B000F420D3 = {
+						CreatedOnToolsVersion = 6.4;
+						TestTargetID = ECFA6A0B1B9AD7AF00F420D3;
+					};
+				};
+			};
+			buildConfigurationList = ECFA6A071B9AD7AF00F420D3 /* Build configuration list for PBXProject "JWSVM-SMO" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ECFA6A031B9AD7AF00F420D3;
+			productRefGroup = ECFA6A0D1B9AD7AF00F420D3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ECFA6A0B1B9AD7AF00F420D3 /* JWSVM-SMO */,
+				ECFA6A241B9AD7B000F420D3 /* JWSVM-SMOTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ECFA6A0A1B9AD7AF00F420D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECFA6A1B1B9AD7AF00F420D3 /* Main.storyboard in Resources */,
+				ECFA6A201B9AD7AF00F420D3 /* LaunchScreen.xib in Resources */,
+				ECFA6A1D1B9AD7AF00F420D3 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECFA6A231B9AD7B000F420D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ECFA6A081B9AD7AF00F420D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */,
+				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
+				ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */,
+				ECFA6A371B9AD88300F420D3 /* JWSMO_Object.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECFA6A211B9AD7B000F420D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECFA6A2C1B9AD7B000F420D3 /* JWSVM_SMOTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECFA6A271B9AD7B000F420D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECFA6A0B1B9AD7AF00F420D3 /* JWSVM-SMO */;
+			targetProxy = ECFA6A261B9AD7B000F420D3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ECFA6A1A1B9AD7AF00F420D3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ECFA6A1F1B9AD7AF00F420D3 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		ECFA6A2D1B9AD7B000F420D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ECFA6A2E1B9AD7B000F420D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ECFA6A301B9AD7B000F420D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "JWSVM-SMO/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		ECFA6A311B9AD7B000F420D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "JWSVM-SMO/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		ECFA6A331B9AD7B000F420D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "JWSVM-SMOTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JWSVM-SMO.app/JWSVM-SMO";
+			};
+			name = Debug;
+		};
+		ECFA6A341B9AD7B000F420D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "JWSVM-SMOTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JWSVM-SMO.app/JWSVM-SMO";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ECFA6A071B9AD7AF00F420D3 /* Build configuration list for PBXProject "JWSVM-SMO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECFA6A2D1B9AD7B000F420D3 /* Debug */,
+				ECFA6A2E1B9AD7B000F420D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECFA6A2F1B9AD7B000F420D3 /* Build configuration list for PBXNativeTarget "JWSVM-SMO" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECFA6A301B9AD7B000F420D3 /* Debug */,
+				ECFA6A311B9AD7B000F420D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		ECFA6A321B9AD7B000F420D3 /* Build configuration list for PBXNativeTarget "JWSVM-SMOTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECFA6A331B9AD7B000F420D3 /* Debug */,
+				ECFA6A341B9AD7B000F420D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ECFA6A041B9AD7AF00F420D3 /* Project object */;
+}
