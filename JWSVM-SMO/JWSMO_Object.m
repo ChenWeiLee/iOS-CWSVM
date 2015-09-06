@@ -60,8 +60,8 @@
 {
     [self stepOne_unKKTValue:NO];
     alpha1Index = 0;
-    thresholdAlpha1 = 0.0;
-    thresholdAlpha2 = 0.0;
+    threshNewAlpha1 = 0.0;
+    threshNewAlpha2 = 0.0;
     
 
 
@@ -76,17 +76,18 @@
         NSLog(@"W:%@ b:%@",w,b);
 
         
-        thresholdAlpha1 = thresholdAlpha1 + fabs([[alphaAry objectAtIndex:[[unKKTAlphaIndexAry objectAtIndex:alpha1Index] intValue]] doubleValue] - oldAlpha1);
-        thresholdAlpha2 = thresholdAlpha2 + fabs([[alphaAry objectAtIndex:[[unKKTAlphaIndexAry objectAtIndex:alpha2Index] intValue]] doubleValue] - oldAlpha2);
+        threshNewAlpha1 = threshNewAlpha1 + fabs([[alphaAry objectAtIndex:[[unKKTAlphaIndexAry objectAtIndex:alpha1Index] intValue]] doubleValue] - oldAlpha1);
+        thresholdAlpha1 = thresholdAlpha1 + oldAlpha1;
         
+        threshNewAlpha2 = threshNewAlpha2 + fabs([[alphaAry objectAtIndex:[[unKKTAlphaIndexAry objectAtIndex:alpha2Index] intValue]] doubleValue] - oldAlpha2);
+        thresholdAlpha2 = thresholdAlpha2 + oldAlpha2;
+
         if ([self stepOne_unKKTValue:YES] ) {
             break;
         }else if( alpha1Index == [unKKTAryY count]-1 ){
-            if (thresholdAlpha1 < threshold && thresholdAlpha2 < threshold) {
-                
+            if (threshNewAlpha1/thresholdAlpha1 < threshold && threshNewAlpha2/thresholdAlpha2 < threshold) {
+                break;
             }else{
-
-                
                 [self updateValueSMO];
             }
         }

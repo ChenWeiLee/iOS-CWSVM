@@ -26,6 +26,7 @@
     
     double thresholdAlpha1,thresholdAlpha2;
     double oldAlpha1,oldAlpha2;
+    double threshNewAlpha1,threshNewAlpha2;
 
     double threshold;
 }
