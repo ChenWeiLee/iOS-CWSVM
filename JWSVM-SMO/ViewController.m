@@ -30,7 +30,7 @@
     [inputYAry addObjectsFromArray:@[@-1,@-1,@1,@1,@1]];
     
     [obj_SMO printW_And_b];
-    [obj_SMO startSMO:inputXAry OutputYAry:inputYAry CValue:1];
+    [obj_SMO startSMO:inputXAry outputYAry:inputYAry cValue:1];
     [obj_SMO printW_And_b];
 
     
