@@ -16,9 +16,11 @@
     if (self) {
         w = [NSMutableArray new];
         b = @0;
+        maxIterations = 1000;
         toleranceValue =  0.0001;  
         oldAlpha1 = 0.0;
-        oldAlpha1 = 0.0;
+        oldAlpha2 = 0.0;
+        oldWa = 0.0;
         
         alphaAry = [NSMutableArray new];
         aryEi = [NSMutableArray new];
@@ -36,11 +38,16 @@
     
 }
 
-- (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(double)cValue
+- (void)initValue:(int)maxIter
+{
+    maxIterations = maxIter;
+}
+
+- (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(float)cValue
 {
     [alphaAry removeAllObjects];
     
-    c = [NSNumber numberWithDouble:cValue];
+    c = [NSNumber numberWithFloat:cValue];
     aryXi = [xAry copy];
     aryYi = [yAry copy];
     inputCount = (int)[[xAry objectAtIndex:1] count];
@@ -106,6 +113,9 @@
             
             [self updateAlpha2];
             
+            NSLog(@"W:%@ b:%@",w,b);
+
+            
             /*
              1、監視目標函數W(\alpha)的增長率，在它低於某個容忍值時停止訓練，這個條件是最直白和簡單的，但是效果不好；
              
@@ -113,19 +123,28 @@
                 
              在這邊採用KKT條件為收斂條件
              */
-            if ([self checkUnKKTValue:YES] ) {
+            
+//            float newWa = [self calculateWa];
+            if ([self checkUnKKTValue:YES] /*|| (oldWa != 0.0 && fabsf((newWa - oldWa)/oldWa) < 0.00001)*/) {
                 inLoop = NO;
                 break;
             }
-
+            
+//            oldWa = newWa;
         }
         
     }
+    MaxIterations -- ;
     
-    if (inLoop && [unKKTIndexAry count] != 0) {
-        [self updateValueSMO];
+    if (MaxIterations == 0) {
+        inLoop = NO;
     }
-
+    if (inLoop && [unKKTIndexAry count] != 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateValueSMO];
+        });
+    }
+//（达到最大迭代次数或没有ai得到更新）
 
    
 }
@@ -137,7 +156,7 @@
 - (BOOL)checkUnKKTValue:(BOOL)check; //Step 1
 {
     NSNumber *alpha;
-    double valueOut , valueWtX = 0.0;
+    float valueOut , valueWtX = 0.0;
     BOOL unKKT;
     
     if (!check) {
@@ -150,10 +169,10 @@
         valueWtX = 0.0;
         alpha = [alphaAry objectAtIndex:index];
         for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
-            valueWtX = valueWtX + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] doubleValue] * [[w objectAtIndex:xIndex]  doubleValue];
+            valueWtX = valueWtX + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[w objectAtIndex:xIndex]  floatValue];
         }
         
-        valueOut = [[aryYi objectAtIndex:index] doubleValue] * (valueWtX + [b doubleValue]);
+        valueOut = [[aryYi objectAtIndex:index] intValue] * (valueWtX + [b floatValue]);
         
         if ([alpha  isEqual: @0]) {
             if ((valueOut + toleranceValue < 1)) {
@@ -189,7 +208,7 @@
 //挑選最大的|E1 - E2|
 - (int)selectAlpha2:(int)alpha1 arrayEi:(NSMutableArray *)arrayEi  //Step 2
 {
-    double maxAbsEiEj = 0.0;
+    float maxAbsEiEj = 0.0;
     int indexalpha2 = 0;
     
     if ([arrayEi count] == 2) {
@@ -198,7 +217,7 @@
         for (int updateIndex = 0; updateIndex < [arrayEi count]; updateIndex ++) {
             if (updateIndex != alpha1) {
                 
-                double absEiEj = fabs([[arrayEi objectAtIndex:alpha1] doubleValue] - [[arrayEi objectAtIndex:updateIndex] doubleValue]);
+                float absEiEj = fabs([[arrayEi objectAtIndex:alpha1] floatValue] - [[arrayEi objectAtIndex:updateIndex] floatValue]);
                 
                 if (maxAbsEiEj < absEiEj) {
                     if ([self checkAlreadyUpdateIndex:updateIndex] || ([alreadyUpdateAlphaIndexAry count] == [unKKTIndexAry count])) {
@@ -217,9 +236,9 @@
 //利用公式來更新我們選取的Alpha2
 - (void)updateAlpha2 // Step 3
 {
-    double alpha2New;
-    double K11 = 0, K22 = 0, K12 = 0;
-    double alpha2Old = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] doubleValue];
+    float alpha2New;
+    float K11 = 0, K22 = 0, K12 = 0;
+    float alpha2Old = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] floatValue];
 
     oldAlpha2 = alpha2Old;
     
@@ -229,9 +248,9 @@
     K12 = [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
 
     
-    alpha2New = alpha2Old + [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * (oldE1 - oldE2) / (K11 + K22 - 2*K12);//還有問題
+    alpha2New = alpha2Old + [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * (oldE1 - oldE2) / (K11 + K22 - 2*K12);
     
-    [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue] withObject:[NSNumber numberWithDouble:alpha2New]];
+    [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue] withObject:[NSNumber numberWithFloat:alpha2New]];
     
     [self checkAlpha2AndUpdateAlpha1:alpha2Index alpha1Index:alpha1Index oldAlpha2:alpha2Old];
     
@@ -241,25 +260,25 @@
 //如大於我們的範圍 Alpha2 = 上限值
 //如小於我們的範圍 Alpha2 = 下限值
 //確認完後即可更新 Alpha1
-- (void)checkAlpha2AndUpdateAlpha1:(int)alpha2 alpha1Index:(int)alpha1 oldAlpha2:(double)alpha2Old //Step 4
+- (void)checkAlpha2AndUpdateAlpha1:(int)alpha2 alpha1Index:(int)alpha1 oldAlpha2:(float)alpha2Old //Step 4
 {
-    double alpha1New;
-    double alpha1Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] doubleValue];
-    double alpha2Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] doubleValue];
+    float alpha1New;
+    float alpha1Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] floatValue];
+    float alpha2Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] floatValue];
     oldAlpha1 = alpha1Value;
 
-    double maxValue,minValue;
+    float maxValue,minValue;
     
     if ([[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] intValue] * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] intValue] == 1) {
         
-        if (0 > alpha2Old + alpha1Value - [c doubleValue]) {
+        if (0 > alpha2Old + alpha1Value - [c floatValue]) {
             minValue = 0;
         }else{
-            minValue = alpha2Old + alpha1Value - [c doubleValue];
+            minValue = alpha2Old + alpha1Value - [c floatValue];
         }
         
-        if ([c doubleValue] < alpha2Old + alpha1Value) {
-            maxValue = [c doubleValue];
+        if ([c floatValue] < alpha2Old + alpha1Value) {
+            maxValue = [c floatValue];
         }else{
             maxValue = alpha2Old + alpha1Value;
         }
@@ -271,65 +290,67 @@
             minValue = alpha2Old - alpha1Value;
         }
         
-        if ([c doubleValue] <= [c doubleValue] + alpha2Old - alpha1Value) {
-            maxValue = [c doubleValue];
+        if ([c floatValue] <= [c floatValue] + alpha2Old - alpha1Value) {
+            maxValue = [c floatValue];
         }else{
-            maxValue = [c doubleValue] + alpha2Old - alpha1Value;
+            maxValue = [c floatValue] + alpha2Old - alpha1Value;
         }
         
     }
     
     if (alpha2Value > maxValue) {
-        [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue] withObject:[NSNumber numberWithDouble:maxValue]];
+        [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue] withObject:[NSNumber numberWithFloat:maxValue]];
         alpha2Value = maxValue;
     }else if (alpha2Value < minValue) {
-        [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue] withObject:[NSNumber numberWithDouble:minValue]];
+        [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue] withObject:[NSNumber numberWithFloat:minValue]];
         alpha2Value = minValue;
     }
     
     alpha1New = alpha1Value + ([[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] intValue] * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] intValue] * (alpha2Old - alpha2Value));
-    [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue] withObject:[NSNumber numberWithDouble:alpha1New]];
+    [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue] withObject:[NSNumber numberWithFloat:alpha1New]];
     
+    NSLog(@"alpha1New:%f alpha2New:%f",alpha1New,alpha2Value);
     
     [self updateWbNewAlpha1:alpha1New newAlpha2:alpha2Value];//更新Ｗ及Ｂ
 
     
 }
 
-- (void)updateWbNewAlpha1:(double)alpha1New newAlpha2:(double)alpha2New //Step 5
+- (void)updateWbNewAlpha1:(float)alpha1New newAlpha2:(float)alpha2New //Step 5
 {
-    double updateWi;
+    float updateWi;
     
 //      更新W
     
     for (int inputX = 0; inputX < inputCount; inputX ++) {
         
-        updateWi = [[w objectAtIndex:inputX] doubleValue] + (alpha1New - oldAlpha1) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] objectAtIndex:inputX] doubleValue] + (alpha2New - oldAlpha2) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] objectAtIndex:inputX] doubleValue];
+        updateWi = [[w objectAtIndex:inputX] floatValue] + (alpha1New - oldAlpha1) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] objectAtIndex:inputX] floatValue] + (alpha2New - oldAlpha2) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] objectAtIndex:inputX] floatValue];
 
-        [w replaceObjectAtIndex:inputX withObject:[NSNumber numberWithDouble:updateWi]];
+        [w replaceObjectAtIndex:inputX withObject:[NSNumber numberWithFloat:updateWi]];
     }
     
 //      更新b
     
-    double b1New = 0.0,b2New = 0.0;
-    double y1a1Value =  [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] doubleValue] * (alpha1New - oldAlpha1);
-    double y2a2Value =  [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] doubleValue] * (alpha2New - oldAlpha2);
+    float b1New = 0.0,b2New = 0.0;
+    float y1a1Value =  [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] floatValue] * (alpha1New - oldAlpha1);
+    float y2a2Value =  [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] floatValue] * (alpha2New - oldAlpha2);
     
     
     
-    b1New = [b doubleValue] - oldE1 - y1a1Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]]] - y2a2Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
+    b1New = [b floatValue] - oldE1 - y1a1Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]]] - y2a2Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
     
     
     
-    b2New = [b doubleValue] - oldE2 - y1a1Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]] - y2a2Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
+    b2New = [b floatValue] - oldE2 - y1a1Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]] - y2a2Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
 
+    NSLog(@"B1:%f  B2:%f",b1New,b2New);
     
-    if (alpha1New != 0 && alpha1New != [c doubleValue]) {
-        b = [NSNumber numberWithDouble:b1New];
-    }else if (alpha2New != 0 && alpha2New != [c doubleValue]){
-        b = [NSNumber numberWithDouble:b2New];
+    if (alpha1New > 0 && alpha1New < [c floatValue]) {
+        b = [NSNumber numberWithFloat:b1New];
+    }else if (alpha2New > 0 && alpha2New < [c floatValue]){
+        b = [NSNumber numberWithFloat:b2New];
     }else{
-        b = [NSNumber numberWithDouble:(b2New + b1New)/2];
+        b = [NSNumber numberWithFloat:(b2New + b1New)/2];
     }
     
     
@@ -345,8 +366,8 @@
 - (void)calculateAllE
 {
     
-    double valueXiTXj = 0.0;
-    double valueEi = 0.0;
+    float valueXiTXj = 0.0;
+    float valueEi = 0.0;
     
     [aryEi removeAllObjects];
     
@@ -357,48 +378,48 @@
             valueXiTXj = 0.0;
 
             for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
-                valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] doubleValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] doubleValue];
+                valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] floatValue];
             }
             
-            valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] doubleValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
+            valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] floatValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
             
         }
         
-        valueEi = valueEi + [b doubleValue] - [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:index] intValue]] intValue];
+        valueEi = valueEi + [b floatValue] - [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:index] intValue]] intValue];
         
-        [aryEi addObject:[NSNumber numberWithDouble:valueEi]];
+        [aryEi addObject:[NSNumber numberWithFloat:valueEi]];
     }
     
 }
 
 //計算傳入index 的E值
-- (double)calculateE:(int)index
+- (float)calculateE:(int)index
 {
-    double valueXiTXj,valueEi = 0.0;
+    float valueXiTXj,valueEi = 0.0;
     for (int indexJ = 0; indexJ < [aryXi count] ; indexJ ++) {
         valueXiTXj = 0.0;
         
         for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
-            valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] doubleValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] doubleValue];
+            valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] floatValue];
         }
         
-        valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] doubleValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
+        valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] floatValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
         
     }
     
-    valueEi = valueEi + [b doubleValue] - [[aryYi objectAtIndex:index] intValue];
+    valueEi = valueEi + [b floatValue] - [[aryYi objectAtIndex:index] intValue];
     
     return valueEi;
 }
 
 //計算傳入 Xi * Xj 的值
 
-- (double)calculateXiTXj:(NSMutableArray *)xi j:(NSMutableArray *)xj
+- (float)calculateXiTXj:(NSMutableArray *)xi j:(NSMutableArray *)xj
 {
-    double xixj = 0.0;
+    float xixj = 0.0;
     
         for (int indexM = 0; indexM < [xj count]; indexM ++) {
-            xixj = xixj + [[xi objectAtIndex:indexM] doubleValue] * [[xj objectAtIndex:indexM] doubleValue];
+            xixj = xixj + [[xi objectAtIndex:indexM] floatValue] * [[xj objectAtIndex:indexM] floatValue];
         }
     
     return xixj;
@@ -417,18 +438,18 @@
 
 //計算 W(a) 的值
 
-- (double)calculateWa
+- (float)calculateWa
 {
-    double sumAlpha = 0.0;
-    double sumIJ = 0.0;
-    double Wa = 0.0;
+    float sumAlpha = 0.0;
+    float sumIJ = 0.0;
+    float Wa = 0.0;
     
     for (int i = 0; i < [aryXi count]; i ++) {
         
-        sumAlpha = sumAlpha + [[alphaAry objectAtIndex:i] doubleValue];
+        sumAlpha = sumAlpha + [[alphaAry objectAtIndex:i] floatValue];
         
         for (int j = 0; j < [aryXi count]; j ++) {
-            sumIJ = sumIJ +([[alphaAry objectAtIndex:i] doubleValue] * [[alphaAry objectAtIndex:j] doubleValue] * [[aryYi objectAtIndex:i] doubleValue] * [[aryYi objectAtIndex:i] doubleValue] * [self calculateXiTXj:[aryXi objectAtIndex:i] j:[aryXi objectAtIndex:j]]);
+            sumIJ = sumIJ +([[alphaAry objectAtIndex:i] floatValue] * [[alphaAry objectAtIndex:j] floatValue] * [[aryYi objectAtIndex:i] floatValue] * [[aryYi objectAtIndex:i] floatValue] * [self calculateXiTXj:[aryXi objectAtIndex:i] j:[aryXi objectAtIndex:j]]);
         }
     }
     

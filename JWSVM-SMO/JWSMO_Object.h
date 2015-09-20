@@ -24,17 +24,20 @@
 
     int inputCount; // 暫存特徵值有多少個
     int alpha1Index, alpha2Index; //更新的alpha1及alpha2 Index
+    int maxIterations;//最大迭代數
     
-    double oldAlpha1,oldAlpha2; // 暫存更新前的alpha1及alpha2
-    double oldE1,oldE2;  // 暫存更新alpha1及alpha2前的E1及E2
+    float oldAlpha1,oldAlpha2; // 暫存更新前的alpha1及alpha2
+    float oldE1,oldE2;  // 暫存更新alpha1及alpha2前的E1及E2
 
-    double toleranceValue; //容忍誤差值
+    float toleranceValue; //容忍誤差值
+    float oldWa;
     
     BOOL inLoop;
 }
 
 - (id)init;
 - (void)printW_And_b;
-- (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(double)cValue;
-- (double)calculateXiTXj:(NSMutableArray *)xi j:(NSMutableArray *)xj;
+- (void)initValue:(int)maxIter;
+- (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(float)cValue;
+- (float)calculateXiTXj:(NSMutableArray *)xi j:(NSMutableArray *)xj;
  @end
