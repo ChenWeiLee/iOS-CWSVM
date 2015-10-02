@@ -9,6 +9,33 @@
 #import "JWSMO_Object.h"
 
 @implementation JWSMO_Object
+{
+    NSMutableArray *w;
+    NSNumber *b;
+    NSNumber *c;
+    
+    NSMutableArray *alphaAry;
+    NSMutableArray *aryXi, *aryYi;
+    NSMutableArray *aryEi;
+    
+    
+    NSMutableArray *unKKTIndexAry; //不符合KKT條件的Index
+    NSMutableArray *alreadyUpdateAlphaIndexAry; //迭代已更新過的Index
+    
+    int inputCount; // 暫存特徵值有多少個
+    int alpha1Index, alpha2Index; //更新的alpha1及alpha2 Index
+    int maxIterations;//最大迭代數
+    
+    float oldAlpha1,oldAlpha2; // 暫存更新前的alpha1及alpha2
+    float oldE1,oldE2;  // 暫存更新alpha1及alpha2前的E1及E2
+    
+    float toleranceValue; //容忍誤差值
+    float oldWa;
+    
+    BOOL inLoop;
+}
+
+
 
 - (id)init
 {
@@ -45,6 +72,11 @@
 
 - (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(float)cValue
 {
+    if ([xAry count] == 0 || [yAry count] == 0) {
+        return;
+    }
+    
+    
     [alphaAry removeAllObjects];
     
     c = [NSNumber numberWithFloat:cValue];
@@ -134,9 +166,9 @@
         }
         
     }
-    MaxIterations -- ;
+    maxIterations -- ;
     
-    if (MaxIterations == 0) {
+    if (maxIterations == 0) {
         inLoop = NO;
     }
     if (inLoop && [unKKTIndexAry count] != 0) {
