@@ -7,11 +7,11 @@
 //
 
 #import "ViewController.h"
-#import "JWSMO_Object.h"
+#import "CWSVM.h"
 
 @interface ViewController ()
 {
-    JWSMO_Object *obj_SMO;
+    CWSVM *obj_SMO;
 }
 @end
 
@@ -22,7 +22,7 @@
     
     inputXAry = [NSMutableArray new];
     inputYAry = [NSMutableArray new];
-    obj_SMO = [[JWSMO_Object alloc]init];
+    obj_SMO = [[CWSVM alloc]init];
     
     
     

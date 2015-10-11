@@ -1,24 +1,18 @@
 //
-//  JWSMO_Object.m
+//  CWSMO.m
 //  JWSVM-SMO
 //
-//  Created by Li Chen wei on 2015/9/5.
-//  Copyright (c) 2015年 Enoch. All rights reserved.
+//  Created by Li Chen wei on 2015/10/11.
+//  Copyright © 2015年 Enoch. All rights reserved.
 //
 
-#import "JWSMO_Object.h"
+#import "CWSMO.h"
 
-@implementation JWSMO_Object
+@implementation CWSMO
 {
-    NSMutableArray *w;
-    NSNumber *b;
-    NSNumber *c;
     
-    NSMutableArray *alphaAry;
     NSMutableArray *aryXi, *aryYi;
     NSMutableArray *aryEi;
-    
-    
     NSMutableArray *unKKTIndexAry; //不符合KKT條件的Index
     NSMutableArray *alreadyUpdateAlphaIndexAry; //迭代已更新過的Index
     
@@ -28,87 +22,46 @@
     
     float oldAlpha1,oldAlpha2; // 暫存更新前的alpha1及alpha2
     float oldE1,oldE2;  // 暫存更新alpha1及alpha2前的E1及E2
-    
-    float toleranceValue; //容忍誤差值
-    float oldWa;
-    
-    BOOL inLoop;
 }
 
-
-
-- (id)init
+- (id)initWithXi:(NSMutableArray *)arrayXi withYi:(NSMutableArray *)arrayYi
 {
     self = [super init];
     if (self) {
-        w = [NSMutableArray new];
-        b = @0;
-        maxIterations = 1000;
-        toleranceValue =  0.0001;  
-        oldAlpha1 = 0.0;
-        oldAlpha2 = 0.0;
-        oldWa = 0.0;
         
-        alphaAry = [NSMutableArray new];
-        aryEi = [NSMutableArray new];
+        [w removeAllObjects];
+        for (int inputX = 0; inputX < inputCount; inputX ++) {
+            [w addObject:@0];
+        }
+        
+        for (int i = 0; i < [xAry count]; i++) {
+            [alphaAry addObject:@0];
+        }
+
+        
+        inputCount = (int)[[arrayXi objectAtIndex:1] count];
+
         
         unKKTIndexAry = [NSMutableArray new];
         alreadyUpdateAlphaIndexAry = [NSMutableArray new];
+        aryEi = [NSMutableArray new];
+        
+        maxIterations = 1000;
+        oldAlpha1 = 0.0;
+        oldAlpha2 = 0.0;
         
     }
     return self;
-}
-
-- (void)printW_And_b{
-    
-    NSLog(@"W:%@ b:%@",w,b);
-    
-}
-
-- (void)initValue:(int)maxIter
-{
-    maxIterations = maxIter;
-}
-
-- (void)startSMO:(NSMutableArray *)xAry outputYAry:(NSMutableArray *)yAry cValue:(float)cValue
-{
-    if ([xAry count] == 0 || [yAry count] == 0) {
-        return;
-    }
-    
-    
-    [alphaAry removeAllObjects];
-    
-    c = [NSNumber numberWithFloat:cValue];
-    aryXi = [xAry copy];
-    aryYi = [yAry copy];
-    inputCount = (int)[[xAry objectAtIndex:1] count];
-    inLoop = YES;
-    
-    /*
-     初始化W 及所有alpha
-     */
-    
-    [w removeAllObjects];
-    for (int inputX = 0; inputX < inputCount; inputX ++) {
-        [w addObject:@0];
-    }
-    
-    for (int i = 0; i < [xAry count]; i++) {
-        [alphaAry addObject:@0];
-    }
-    
-    [self updateValueSMO];
 }
 
 - (void)updateValueSMO
 {
     [self checkUnKKTValue:NO];
     alpha1Index = 0;
-
+    
     [self calculateAllE];
-
-
+    
+    
     for (alpha1Index = 0; alpha1Index < [unKKTIndexAry count]; alpha1Index ++) {
         if ([self checkAlreadyUpdateIndex:alpha1Index]) {
             
@@ -123,7 +76,7 @@
              3、如果2中也沒找到，則從整個樣本(包含界上和非界乘子)隨機位置尋找。
              */
             alpha2Index = [self selectAlpha2:alpha1Index arrayEi:aryEi];
-
+            
             if (alpha2Index == alpha1Index) {
                 alpha2Index = arc4random() % ([aryYi count]);
                 if (alpha2Index == [[unKKTIndexAry objectAtIndex:alpha1Index] intValue]) {
@@ -146,23 +99,23 @@
             [self updateAlpha2];
             
             NSLog(@"W:%@ b:%@",w,b);
-
+            
             
             /*
              1、監視目標函數W(\alpha)的增長率，在它低於某個容忍值時停止訓練，這個條件是最直白和簡單的，但是效果不好；
              
              2、監視原問題的KKT條件，對於凸優化來說它們是收斂的充要條件，但是由於KKT條件本身是比較嚴苛的，所以也需要設定一個容忍值，即所有樣本在容忍值範圍内滿足KKT條件則認為訓練可以結束；
-                
+             
              在這邊採用KKT條件為收斂條件
              */
             
-//            float newWa = [self calculateWa];
+            //            float newWa = [self calculateWa];
             if ([self checkUnKKTValue:YES] /*|| (oldWa != 0.0 && fabsf((newWa - oldWa)/oldWa) < 0.00001)*/) {
                 inLoop = NO;
                 break;
             }
             
-//            oldWa = newWa;
+            //            oldWa = newWa;
         }
         
     }
@@ -176,9 +129,9 @@
             [self updateValueSMO];
         });
     }
-//（达到最大迭代次数或没有ai得到更新）
-
-   
+    //（达到最大迭代次数或没有ai得到更新）
+    
+    
 }
 
 
@@ -259,7 +212,7 @@
                 }
             }
         }
-
+        
     }
     
     return indexalpha2;
@@ -271,14 +224,14 @@
     float alpha2New;
     float K11 = 0, K22 = 0, K12 = 0;
     float alpha2Old = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] floatValue];
-
+    
     oldAlpha2 = alpha2Old;
     
     
     K11 = [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]]];
     K22 = [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
     K12 = [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
-
+    
     
     alpha2New = alpha2Old + [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * (oldE1 - oldE2) / (K11 + K22 - 2*K12);
     
@@ -298,7 +251,7 @@
     float alpha1Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] floatValue];
     float alpha2Value = [[alphaAry objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] floatValue];
     oldAlpha1 = alpha1Value;
-
+    
     float maxValue,minValue;
     
     if ([[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue]] intValue] * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1] intValue]] intValue] == 1) {
@@ -344,7 +297,7 @@
     NSLog(@"alpha1New:%f alpha2New:%f",alpha1New,alpha2Value);
     
     [self updateWbNewAlpha1:alpha1New newAlpha2:alpha2Value];//更新Ｗ及Ｂ
-
+    
     
 }
 
@@ -352,16 +305,16 @@
 {
     float updateWi;
     
-//      更新W
+    //      更新W
     
     for (int inputX = 0; inputX < inputCount; inputX ++) {
         
         updateWi = [[w objectAtIndex:inputX] floatValue] + (alpha1New - oldAlpha1) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] objectAtIndex:inputX] floatValue] + (alpha2New - oldAlpha2) * [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * [[[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] objectAtIndex:inputX] floatValue];
-
+        
         [w replaceObjectAtIndex:inputX withObject:[NSNumber numberWithFloat:updateWi]];
     }
     
-//      更新b
+    //      更新b
     
     float b1New = 0.0,b2New = 0.0;
     float y1a1Value =  [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] floatValue] * (alpha1New - oldAlpha1);
@@ -374,7 +327,7 @@
     
     
     b2New = [b floatValue] - oldE2 - y1a1Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha1Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]] - y2a2Value * [self calculateXiTXj:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] j:[aryXi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]]];
-
+    
     NSLog(@"B1:%f  B2:%f",b1New,b2New);
     
     if (alpha1New > 0 && alpha1New < [c floatValue]) {
@@ -408,7 +361,7 @@
         
         for (int indexJ = 0; indexJ < [aryXi count] ; indexJ ++) {
             valueXiTXj = 0.0;
-
+            
             for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
                 valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] floatValue];
             }
@@ -450,9 +403,9 @@
 {
     float xixj = 0.0;
     
-        for (int indexM = 0; indexM < [xj count]; indexM ++) {
-            xixj = xixj + [[xi objectAtIndex:indexM] floatValue] * [[xj objectAtIndex:indexM] floatValue];
-        }
+    for (int indexM = 0; indexM < [xj count]; indexM ++) {
+        xixj = xixj + [[xi objectAtIndex:indexM] floatValue] * [[xj objectAtIndex:indexM] floatValue];
+    }
     
     return xixj;
 }
@@ -485,9 +438,7 @@
         }
     }
     
-   return Wa = sumAlpha - sumIJ/2;
+    return Wa = sumAlpha - sumIJ/2;
 }
-
-
 
 @end
