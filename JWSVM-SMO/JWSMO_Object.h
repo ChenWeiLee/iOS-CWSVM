@@ -1,19 +1,19 @@
 //
-//  CWSVM.h
+//  JWSMO_Object.h
 //  JWSVM-SMO
 //
-//  Created by Li Chen wei on 2015/10/11.
-//  Copyright © 2015年 Enoch. All rights reserved.
+//  Created by Li Chen wei on 2015/9/5.
+//  Copyright (c) 2015年 Enoch. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface CWSVM : NSObject
+@interface JWSMO_Object : NSObject
+
 
 @property (nonatomic, retain) NSArray *inputAry;
 @property (nonatomic, retain) NSArray *outputAry;
 @property (nonatomic, retain) NSArray *results;
-
 
 - (id)init;
 - (void)printW_And_b;
@@ -26,4 +26,4 @@
 -(void)classifyPatterns:(NSArray *)_patterns;
 -(void)verifyPatterns:(NSArray *)_patterns;
 
-@end
+ @end
