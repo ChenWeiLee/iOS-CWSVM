@@ -58,7 +58,7 @@
 - (void)startTrain:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi
 {
     if ([aryXi count] == 0) {
-        break;
+        return;
     }
     
     
