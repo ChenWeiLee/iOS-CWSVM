@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "25FB64375B42FF9AD92EF8C2B752F58F04CDDF08",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "25FB64375B42FF9AD92EF8C2B752F58F04CDDF08" : 0,
+    "210CB819005DFFF42A87C931152C57B942239155" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "93DB17EA-BADC-4AE9-9400-442DA1F6F564",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "25FB64375B42FF9AD92EF8C2B752F58F04CDDF08" : "LinearSVM",
+    "210CB819005DFFF42A87C931152C57B942239155" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "JWSVM-SMO",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "JWSVM-SMO.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "gitlab.hq.hiiir:ecs_gropus\/ecs-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "210CB819005DFFF42A87C931152C57B942239155"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Justin-li\/CWLinearSVM.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "25FB64375B42FF9AD92EF8C2B752F58F04CDDF08"
+    }
+  ]
+}

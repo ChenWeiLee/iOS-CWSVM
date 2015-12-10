@@ -43,11 +43,15 @@
     if (self) {
         w = [NSMutableArray new];
         b = @0;
-        maxIterations = 1000;
+        maxIterations = 10000;
         toleranceValue =  0.0001;  
         oldAlpha1 = 0.0;
         oldAlpha2 = 0.0;
         oldWa = 0.0;
+
+        sigma = 1;
+        
+        mode = Linear;
         
         alphaAry = [NSMutableArray new];
         aryEi = [NSMutableArray new];
@@ -104,16 +108,16 @@
 - (void)updateValueSMO
 {
     [self checkUnKKTValue:NO];
-    alpha1Index = 0;
 
     [self calculateAllE];
 
 
     for (alpha1Index = 0; alpha1Index < [unKKTIndexAry count]; alpha1Index ++) {
+        alpha1Index = [self selectAlpha1:alpha1Index];
+
         if ([self checkAlreadyUpdateIndex:alpha1Index]) {
             
             [alreadyUpdateAlphaIndexAry addObject:[NSNumber numberWithInt:alpha1Index]];
-            
             
             /*
              1、首先在非KKT條件的alpha中尋找使得|E1-E2|最大的樣本；
@@ -184,7 +188,7 @@
 
 //確認整個樣本中哪些是不符合KKT條件的
 // check = YES時 只確認所有樣本是否符合KKT
-//       =  NO時 確認樣本不符合並將其index存起來以便更新時使用
+//       = NO 時 確認樣本不符合並將其index存起來以便更新時使用
 - (BOOL)checkUnKKTValue:(BOOL)check; //Step 1
 {
     NSNumber *alpha;
@@ -225,7 +229,6 @@
             if (check) {
                 return NO;
             }else{
-                
                 [unKKTIndexAry addObject:[NSNumber numberWithInt:index]];
             }
             
@@ -235,6 +238,19 @@
     
     return ([unKKTIndexAry count] == 0 ? YES : NO);
 }
+
+
+- (int)selectAlpha1:(int)nowInt
+{
+    for (int i = 0; i < [unKKTIndexAry count]; i++) {
+    
+        if ([[alphaAry objectAtIndex:i]  isEqual: c]) {
+            return i;
+        }
+    }
+    return nowInt;
+}
+
 
 //選取要更新的Alpha2
 //挑選最大的|E1 - E2|
@@ -282,6 +298,7 @@
     
     alpha2New = alpha2Old + [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue]] intValue] * (oldE1 - oldE2) / (K11 + K22 - 2*K12);
     
+    // 將更新的 alpha2 存回原本的Array中
     [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2Index] intValue] withObject:[NSNumber numberWithFloat:alpha2New]];
     
     [self checkAlpha2AndUpdateAlpha1:alpha2Index alpha1Index:alpha1Index oldAlpha2:alpha2Old];
@@ -330,6 +347,7 @@
         
     }
     
+    //如果 alpha2 不在既定範圍中的話，將 alpha2 限制在最大可接受值
     if (alpha2Value > maxValue) {
         [alphaAry replaceObjectAtIndex:[[unKKTIndexAry objectAtIndex:alpha2] intValue] withObject:[NSNumber numberWithFloat:maxValue]];
         alpha2Value = maxValue;
@@ -409,12 +427,9 @@
         for (int indexJ = 0; indexJ < [aryXi count] ; indexJ ++) {
             valueXiTXj = 0.0;
 
-            for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
-                valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] floatValue];
-            }
+            valueXiTXj  = [self calculateXiTXj:[aryXi objectAtIndex:index] j:[aryXi objectAtIndex:indexJ]];
             
             valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] floatValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
-            
         }
         
         valueEi = valueEi + [b floatValue] - [[aryYi objectAtIndex:[[unKKTIndexAry objectAtIndex:index] intValue]] intValue];
@@ -431,9 +446,9 @@
     for (int indexJ = 0; indexJ < [aryXi count] ; indexJ ++) {
         valueXiTXj = 0.0;
         
-        for (int xIndex = 0; xIndex < inputCount; xIndex ++) {
-            valueXiTXj = valueXiTXj + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] floatValue] * [[[aryXi objectAtIndex:indexJ] objectAtIndex:xIndex] floatValue];
-        }
+
+        
+        valueXiTXj  = [self calculateXiTXj:[aryXi objectAtIndex:index] j:[aryXi objectAtIndex:indexJ]];
         
         valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] floatValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
         
@@ -450,8 +465,23 @@
 {
     float xixj = 0.0;
     
-        for (int indexM = 0; indexM < [xj count]; indexM ++) {
-            xixj = xixj + [[xi objectAtIndex:indexM] floatValue] * [[xj objectAtIndex:indexM] floatValue];
+
+    switch (mode) {
+        case Linear:
+        {
+            for (int indexM = 0; indexM < [xj count]; indexM ++) {
+                xixj = xixj + [[xi objectAtIndex:indexM] floatValue] * [[xj objectAtIndex:indexM] floatValue];
+            }
+        }
+            break;
+        case rbf:
+        {
+            //https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/exp.3.html
+            for (int indexM = 0; indexM < [xj count]; indexM ++) {
+                xixj = xixj + powf([[xi objectAtIndex:indexM] floatValue] - [[xj objectAtIndex:indexM] floatValue], 2);
+            }
+            xixj = sqrtf(xixj);
+            xixj = expf(pow(xixj, 2)/(-2*pow(sigma, 2)));
         }
     
     return xixj;

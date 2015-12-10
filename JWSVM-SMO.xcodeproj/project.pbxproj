@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB371D1C19C8F60013884E /* CWSMO.m */; };
+		ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB37201C19C9170013884E /* CWSVMManager.m */; };
 		ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A111B9AD7AF00F420D3 /* main.m */; };
 		ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */; };
 		ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A171B9AD7AF00F420D3 /* ViewController.m */; };
@@ -28,6 +30,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		ECAB371C1C19C8F60013884E /* CWSMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSMO.h; sourceTree = "<group>"; };
+		ECAB371D1C19C8F60013884E /* CWSMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSMO.m; sourceTree = "<group>"; };
+		ECAB371F1C19C9170013884E /* CWSVMManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSVMManager.h; sourceTree = "<group>"; };
+		ECAB37201C19C9170013884E /* CWSVMManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSVMManager.m; sourceTree = "<group>"; };
 		ECFA6A0C1B9AD7AF00F420D3 /* JWSVM-SMO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JWSVM-SMO.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECFA6A101B9AD7AF00F420D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ECFA6A111B9AD7AF00F420D3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -94,6 +100,10 @@
 				ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */,
 				ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */,
 				ECFA6A0F1B9AD7AF00F420D3 /* Supporting Files */,
+				ECAB371C1C19C8F60013884E /* CWSMO.h */,
+				ECAB371D1C19C8F60013884E /* CWSMO.m */,
+				ECAB371F1C19C9170013884E /* CWSVMManager.h */,
+				ECAB37201C19C9170013884E /* CWSVMManager.m */,
 			);
 			path = "JWSVM-SMO";
 			sourceTree = "<group>";
@@ -226,7 +236,9 @@
 			files = (
 				ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */,
 				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
+				ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */,
 				ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */,
+				ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */,
 				ECFA6A371B9AD88300F420D3 /* JWSMO_Object.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -424,6 +436,7 @@
 				ECFA6A311B9AD7B000F420D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ECFA6A321B9AD7B000F420D3 /* Build configuration list for PBXNativeTarget "JWSVM-SMOTests" */ = {
 			isa = XCConfigurationList;
@@ -432,6 +445,7 @@
 				ECFA6A341B9AD7B000F420D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
