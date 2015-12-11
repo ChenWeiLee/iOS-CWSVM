@@ -66,16 +66,18 @@
     if (w == nil && bias == -1) {
         w = [NSMutableArray new];
         aryAlphe = [NSMutableArray new];
-        
-        for (int i = 0; i < [aryXi count]; i ++) {
-            [aryAlphe addObject:@"0"];
-        }
-        
-        for (int j = 0; j < [[aryXi objectAtIndex:0] count]; j ++) {
-            [w addObject:@"0"];
-        }
         bias = 0;
     }
+    
+    
+    for (int i = 0; i < [aryXi count]; i ++) {
+        [aryAlphe addObject:@"0"];
+    }
+    
+    for (int j = 0; j < [[aryXi objectAtIndex:0] count]; j ++) {
+        [w addObject:@"0"];
+    }
+
     
     for (int i = 0; i < iteration; i ++) {
         [self alphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue callBack:^(NSMutableArray *boundaryAry, NSMutableArray *nonBoundAry) {
@@ -111,15 +113,10 @@
         }
         valueOut = [[aryYi objectAtIndex:index] intValue] * (valueWtX + b);
         
-        if (alpha  == 0) {
-            if ((valueOut + toleranceValue < 1)) {
-                [bound addObject:[NSNumber numberWithInt:index]];
-            }
-        }else if (alpha  == c){
-            if (valueOut - toleranceValue > 1) {
-                [nonBound addObject:[NSNumber numberWithInt:index]];
-            }
-        }else{
+        if ((alpha  == 0 && valueOut + toleranceValue < 1) || (alpha  == c && valueOut - toleranceValue > 1)) {
+            [bound addObject:[NSNumber numberWithInt:index]];
+
+        }else if (alpha > 0 || alpha < c){
             if (fabs(valueOut - 1) > toleranceValue/2 && valueOut != 1) {
                 [bound addObject:[NSNumber numberWithInt:index]];
             }
