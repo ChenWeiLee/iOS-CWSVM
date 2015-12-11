@@ -116,7 +116,7 @@
         if ((alpha  == 0 && valueOut + toleranceValue < 1) || (alpha  == c && valueOut - toleranceValue > 1)) {
             [bound addObject:[NSNumber numberWithInt:index]];
 
-        }else if (alpha > 0 || alpha < c){
+        }else if (alpha > 0 && alpha < c){
             if (fabs(valueOut - 1) > toleranceValue/2 && valueOut != 1) {
                 [bound addObject:[NSNumber numberWithInt:index]];
             }
