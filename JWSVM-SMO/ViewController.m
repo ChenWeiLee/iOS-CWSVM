@@ -27,15 +27,15 @@
 //    
 //    
 //    
-    [inputXAry addObjectsFromArray:@[@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0]]];
-    [inputYAry addObjectsFromArray:@[@-1,@-1,@1,@1]];
+    [inputXAry addObjectsFromArray:@[@[@0,@1],@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0],@[@4,@0]]];
+    [inputYAry addObjectsFromArray:@[@-1,@-1,@-1,@1,@1,@1]];
 //
 //    [obj_SMO printW_And_b];
 //    [obj_SMO startSMO:inputXAry outputYAry:inputYAry cValue:1];
 //    [obj_SMO printW_And_b];
 
     
-    CWSMO *smo = [[CWSMO alloc] initWithKernelMethod:LinearKernel sigmaValue:1 maxIterations:1000 relaxation:10];
+    CWSMO *smo = [[CWSMO alloc] initWithKernelMethod:LinearKernel sigmaValue:1 maxIterations:1000 relaxation:1];
     [smo startTrain:inputXAry aryYi:inputYAry];
     
     // Do any additional setup after loading the view, typically from a nib.

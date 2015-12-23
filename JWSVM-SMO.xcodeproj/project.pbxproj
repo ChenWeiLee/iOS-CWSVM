@@ -7,16 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC0BFB441C1F32840030334D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0BFB431C1F32840030334D /* ViewController.m */; };
 		ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB371D1C19C8F60013884E /* CWSMO.m */; };
 		ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB37201C19C9170013884E /* CWSVMManager.m */; };
 		ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A111B9AD7AF00F420D3 /* main.m */; };
 		ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */; };
-		ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A171B9AD7AF00F420D3 /* ViewController.m */; };
 		ECFA6A1B1B9AD7AF00F420D3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */; };
 		ECFA6A1D1B9AD7AF00F420D3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */; };
 		ECFA6A201B9AD7AF00F420D3 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */; };
 		ECFA6A2C1B9AD7B000F420D3 /* JWSVM_SMOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A2B1B9AD7B000F420D3 /* JWSVM_SMOTests.m */; };
-		ECFA6A371B9AD88300F420D3 /* JWSMO_Object.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EC0BFB421C1F32840030334D /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		EC0BFB431C1F32840030334D /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		ECAB371C1C19C8F60013884E /* CWSMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSMO.h; sourceTree = "<group>"; };
 		ECAB371D1C19C8F60013884E /* CWSMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSMO.m; sourceTree = "<group>"; };
 		ECAB371F1C19C9170013884E /* CWSVMManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSVMManager.h; sourceTree = "<group>"; };
@@ -39,16 +40,12 @@
 		ECFA6A111B9AD7AF00F420D3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ECFA6A131B9AD7AF00F420D3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		ECFA6A161B9AD7AF00F420D3 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		ECFA6A171B9AD7AF00F420D3 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		ECFA6A1A1B9AD7AF00F420D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		ECFA6A1F1B9AD7AF00F420D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		ECFA6A251B9AD7B000F420D3 /* JWSVM-SMOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "JWSVM-SMOTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECFA6A2A1B9AD7B000F420D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ECFA6A2B1B9AD7B000F420D3 /* JWSVM_SMOTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JWSVM_SMOTests.m; sourceTree = "<group>"; };
-		ECFA6A351B9AD88300F420D3 /* JWSMO_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JWSMO_Object.h; sourceTree = "<group>"; };
-		ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JWSMO_Object.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,12 +87,10 @@
 		ECFA6A0E1B9AD7AF00F420D3 /* JWSVM-SMO */ = {
 			isa = PBXGroup;
 			children = (
+				EC0BFB421C1F32840030334D /* ViewController.h */,
+				EC0BFB431C1F32840030334D /* ViewController.m */,
 				ECFA6A131B9AD7AF00F420D3 /* AppDelegate.h */,
 				ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */,
-				ECFA6A161B9AD7AF00F420D3 /* ViewController.h */,
-				ECFA6A171B9AD7AF00F420D3 /* ViewController.m */,
-				ECFA6A351B9AD88300F420D3 /* JWSMO_Object.h */,
-				ECFA6A361B9AD88300F420D3 /* JWSMO_Object.m */,
 				ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */,
 				ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */,
 				ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */,
@@ -234,12 +229,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECFA6A181B9AD7AF00F420D3 /* ViewController.m in Sources */,
 				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
 				ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */,
 				ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */,
 				ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */,
-				ECFA6A371B9AD88300F420D3 /* JWSMO_Object.m in Sources */,
+				EC0BFB441C1F32840030334D /* ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,6 +18,8 @@ typedef enum kernelType{
     NSMutableArray *w;
     double bias;
     NSMutableArray *aryAlphe;
+    NSMutableArray *bound;
+    NSMutableArray *nonBound;
     
     kernelType kernelMode;
     double sigma;

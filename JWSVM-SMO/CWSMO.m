@@ -24,6 +24,9 @@
         toleranceValue = 0.0001;
         cValue = 10;
         _Tag = @"0";
+        
+        bound = [NSMutableArray new];
+        nonBound = [NSMutableArray new];
     }
     return self;
 }
@@ -61,7 +64,9 @@
         return;
     }
     
-    
+    __block BOOL stopSMO = NO;
+    __block BOOL inSMOStop = NO;
+
     //如果這個CWSMO NSObject是一個新的話，就初始化所有的值
     if (w == nil && bias == -1) {
         w = [NSMutableArray new];
@@ -78,32 +83,242 @@
         [w addObject:@"0"];
     }
 
+    /*
+    for (int i = 0; i < iteration; i ++) {
+        stopSMO = [self alphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue];
+        
+        if (stopSMO) {
+            break;
+        }else{
+            
+            int tempAlpheAryIndex;
+            int i = 0, j;
+            int yi,yj;
+            double alphe1New,alphe2New;
+            double alphe1Old,alphe2Old;
+            double oldE1,oldE2;
+            
+            //找出最適合的Alphe 1 在aryXi中的index
+            if ([nonBound count] != 0) {
+                tempAlpheAryIndex = [self getReadyUpadteAlpha1:nonBound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe];
+                i = [[nonBound objectAtIndex:tempAlpheAryIndex] intValue];
+                [nonBound removeObjectAtIndex:tempAlpheAryIndex];
+                
+            }else{
+                tempAlpheAryIndex = [self getReadyUpadteAlpha1:bound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe];
+                i = [[bound objectAtIndex:tempAlpheAryIndex] intValue];
+                [bound removeObjectAtIndex:tempAlpheAryIndex];
+            }
+            
+            //找出最適合的Alphe 2 在aryXi中的index
+            if ([nonBound count] != 0) {
+                tempAlpheAryIndex = [self getReadyUpadteAlpha2:nonBound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe alpheI:i];
+                j = [[nonBound objectAtIndex:tempAlpheAryIndex] intValue];
+                //                    [nonBound removeObjectAtIndex:tempAlpheAryIndex];
+                
+            }
+            else if([bound count] != 0){
+                
+                tempAlpheAryIndex = [self getReadyUpadteAlpha2:bound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe alpheI:i];
+                j = [[bound objectAtIndex:tempAlpheAryIndex] intValue];
+                //                    [bound removeObjectAtIndex:tempAlpheAryIndex];
+                
+            }
+            else{//當Alphe 1挑完後全部淨空，沒有剩下不符KKT條件的部分
+                j = arc4random() % ([aryYi count]);
+                if (i == j) {
+                    if (i != [aryYi count]-1) {
+                        j = j+1;
+                    }else{
+                        j = j-1;
+                    }
+                }
+            }
+            
+            
+            yi = [[aryYi objectAtIndex:i] intValue];
+            yj = [[aryYi objectAtIndex:j] intValue];
+            
+            alphe1Old = [[aryAlphe objectAtIndex:i] doubleValue];
+            alphe2Old = [[aryAlphe objectAtIndex:j] doubleValue];
+            
+            oldE1 = [self calculateE:aryXi aryYi:aryYi aryAlpha:aryAlphe index:i bias:bias];
+            oldE2 = [self calculateE:aryXi aryYi:aryYi aryAlpha:aryAlphe index:j bias:bias];
+            
+            //先更新Alphe 2
+            alphe2New = [self updateAlpha2:alphe2Old aryX1:[aryXi objectAtIndex:i] aryX2:[aryXi objectAtIndex:j] y2:yj oldE1:oldE1 oldE2:oldE2];
+            //確認更新的Alphe 2在範圍內
+            alphe2New = [self checkRange:alphe1Old alpha2New:alphe2New alpha2Old:alphe2Old y1:yi y2:yj cValue:cValue];
+            //更新Alphe 1
+            alphe1New = [self updateAlpha1:alphe1Old alpha2:alphe2New alpha2Old:alphe2Old y1:yi y2:yj];
+            
+            if (alphe1Old == alphe1New && alphe2Old == alphe2New){
+                break;
+            }
+            
+            //更新 aryAlphe中的 Alphe
+            [aryAlphe replaceObjectAtIndex:i withObject:[NSNumber numberWithDouble:alphe1New]];
+            [aryAlphe replaceObjectAtIndex:j withObject:[NSNumber numberWithDouble:alphe2New]];
+            
+            //更新誤差bais
+            bias = [self updateBias:bias aryX1:[aryXi objectAtIndex:i] aryX2:[aryXi objectAtIndex:j] y1Value:yi y2Value:yj alpha1New:alphe1New oldAlpha1:alphe1Old alpha2New:alphe2New oldAlpha2:alphe2Old oldE1:oldE1 oldE2:oldE2 valueC:cValue];
+            //更新Ｗ
+//            w = [[self updateW:w alpha1New:alphe1New oldAlpha1:alphe1Old alpha2New:alphe2New oldAlpha2:alphe2Old yi:yi xi:[aryXi objectAtIndex:i] yj:yj xj:[aryXi objectAtIndex:j]] mutableCopy];
+            
+            NSLog(@"Alphe1:%d Alpha2:%d",i,j);
+            NSLog(@"alphe1Old:%f alphe1New:%f",alphe1Old,alphe1New);
+            NSLog(@"alphe2Old:%f alphe2New:%f",alphe2Old,alphe2New);
+            NSLog(@"Bias:%f",bias);
+            NSLog(@"W:%@",w);
+            NSLog(@"====nonBoundaryAry:%ld BoundAry:%ld====",[nonBound count],[bound count]);
+            
+            inSMOStop = [self checkAlphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue];
+            
+            if (inSMOStop) {
+                NSLog(@"inSMOStop");
+                //                    NSLog(@"W:%@",wAry);
+                break;
+            }
+            
+            if (inSMOStop) {
+                break;
+            }
+        }
+        
+        
+    }*/
+    
+    
+//    __block NSMutableArray *wAry = [w mutableCopy];
     
     for (int i = 0; i < iteration; i ++) {
-        [self alphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue callBack:^(NSMutableArray *boundaryAry, NSMutableArray *nonBoundAry) {
+        stopSMO = [self alphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue];
+        
+        if (stopSMO) {
+            break;
+        }else{
             
+            int tempAlpheAryIndex;
+            int i = 0, j;
+            int yi,yj;
+            double alphe1New,alphe2New;
+            double alphe1Old,alphe2Old;
+            double oldE1,oldE2;
             
-            
-            
-            NSLog(@"123");
-            
-            
-            
-            
-            
-        }];
+            do {
+                
+                NSLog(@"boundaryAry:%ld nonBoundAry:%ld",[nonBound count],[bound count]);
+                
+                //找出最適合的Alphe 1 在aryXi中的index
+                if ([nonBound count] != 0) {
+                    tempAlpheAryIndex = [self getReadyUpadteAlpha1:nonBound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe];
+                    i = [[nonBound objectAtIndex:tempAlpheAryIndex] intValue];
+                    [nonBound removeObjectAtIndex:tempAlpheAryIndex];
+                    
+                }else{
+                    tempAlpheAryIndex = [self getReadyUpadteAlpha1:bound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe];
+                    i = [[bound objectAtIndex:tempAlpheAryIndex] intValue];
+                    [bound removeObjectAtIndex:tempAlpheAryIndex];
+                }
+                
+                //找出最適合的Alphe 2 在aryXi中的index
+                if ([nonBound count] != 0) {
+                    tempAlpheAryIndex = [self getReadyUpadteAlpha2:nonBound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe alpheI:i];
+                    j = [[nonBound objectAtIndex:tempAlpheAryIndex] intValue];
+//                    [nonBound removeObjectAtIndex:tempAlpheAryIndex];
+                    
+                }
+                else if([bound count] != 0){
+                    
+                    tempAlpheAryIndex = [self getReadyUpadteAlpha2:bound aryXi:aryXi aryYi:aryYi alpheAry:aryAlphe alpheI:i];
+                    j = [[bound objectAtIndex:tempAlpheAryIndex] intValue];
+//                    [bound removeObjectAtIndex:tempAlpheAryIndex];
+                    
+                }
+                else{//當Alphe 1挑完後全部淨空，沒有剩下不符KKT條件的部分
+                    j = arc4random() % ([aryYi count]);
+                    if (i == j) {
+                        if (i != [aryYi count]-1) {
+                            j = j+1;
+                        }else{
+                            j = j-1;
+                        }
+                    }
+                }
+                
+                
+                yi = [[aryYi objectAtIndex:i] intValue];
+                yj = [[aryYi objectAtIndex:j] intValue];
+                
+                alphe1Old = [[aryAlphe objectAtIndex:i] doubleValue];
+                alphe2Old = [[aryAlphe objectAtIndex:j] doubleValue];
+                
+                oldE1 = [self calculateE:aryXi aryYi:aryYi aryAlpha:aryAlphe index:i bias:bias];
+                oldE2 = [self calculateE:aryXi aryYi:aryYi aryAlpha:aryAlphe index:j bias:bias];
+                
+                //先更新Alphe 2
+                alphe2New = [self updateAlpha2:alphe2Old aryX1:[aryXi objectAtIndex:i] aryX2:[aryXi objectAtIndex:j] y2:yj oldE1:oldE1 oldE2:oldE2];
+                //確認更新的Alphe 2在範圍內
+                alphe2New = [self checkRange:alphe1Old alpha2New:alphe2New alpha2Old:alphe2Old y1:yi y2:yj cValue:cValue];
+                //更新Alphe 1
+                alphe1New = [self updateAlpha1:alphe1Old alpha2:alphe2New alpha2Old:alphe2Old y1:yi y2:yj];
+                
+                if (alphe1Old == alphe1New && alphe2Old == alphe2New){
+                    break;
+                }
+                
+                //更新 aryAlphe中的 Alphe
+                [aryAlphe replaceObjectAtIndex:i withObject:[NSNumber numberWithDouble:alphe1New]];
+                [aryAlphe replaceObjectAtIndex:j withObject:[NSNumber numberWithDouble:alphe2New]];
+                
+                //更新Ｗ
+                w = [[self updateW:w alpha1New:alphe1New oldAlpha1:alphe1Old alpha2New:alphe2New oldAlpha2:alphe2Old yi:yi xi:[aryXi objectAtIndex:i] yj:yj xj:[aryXi objectAtIndex:j]] mutableCopy];
+                //更新誤差bais
+                bias = [self updateBias:bias aryX1:[aryXi objectAtIndex:i] aryX2:[aryXi objectAtIndex:j] y1Value:yi y2Value:yj alpha1New:alphe1New oldAlpha1:alphe1Old alpha2New:alphe2New oldAlpha2:alphe2Old oldE1:oldE1 oldE2:oldE2 valueC:cValue];
+                
+                
+                NSLog(@"Alphe1:%d Alpha2:%d",i,j);
+                NSLog(@"alphe1Old:%f alphe1New:%f",alphe1Old,alphe1New);
+                NSLog(@"alphe2Old:%f alphe2New:%f",alphe2Old,alphe2New);
+                NSLog(@"Bias:%f",bias);
+                NSLog(@"W:%@",w);
+                NSLog(@"====nonBoundaryAry:%ld BoundAry:%ld====",[nonBound count],[bound count]);
+                
+                inSMOStop = [self checkAlphaOutOfKKT:aryXi aryYi:aryYi aryAlpha:aryAlphe wAry:w b:bias valueC:cValue];
+                
+                if (inSMOStop) {
+                    NSLog(@"inSMOStop");
+//                    NSLog(@"W:%@",wAry);
+                    break;
+                }
+                
+            } while ([nonBound count] + [bound count] > 0 );
+
+//            w = [wAry mutableCopy];
+            if (inSMOStop) {
+                break;
+            }
+        }
+        
+
     }
+    
+
 }
 
 
 //計算不符合KKT條件的項目，並分別回傳是否有在邊界上
-- (void)alphaOutOfKKT:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi aryAlpha:(NSMutableArray *)alphaAry wAry:(NSMutableArray *)wAry b:(double)b valueC:(double)c callBack:(void(^)(NSMutableArray *boundaryAry, NSMutableArray *nonBoundAry))completeBlock
+- (BOOL)alphaOutOfKKT:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi aryAlpha:(NSMutableArray *)alphaAry wAry:(NSMutableArray *)wAry b:(double)b valueC:(double)c
 {
-    NSMutableArray *bound = [NSMutableArray new];
-    NSMutableArray *nonBound = [NSMutableArray new];
     double valueWtX,valueOut;
     double alpha;
+ 
+    [nonBound removeAllObjects];
+    [bound removeAllObjects];
     
+    
+    //nonBound：在aryXi 不符合KKT條件並且不在邊界上的index
+    //bound：在aryXi 不符合KKT條件並且在邊界上的index
     for (int index = 0 ; index < [aryXi count] ; index++) {
         
         valueWtX = 0.0;
@@ -113,27 +328,128 @@
         }
         valueOut = [[aryYi objectAtIndex:index] intValue] * (valueWtX + b);
         
-        if ((alpha  == 0 && valueOut + toleranceValue < 1) || (alpha  == c && valueOut - toleranceValue > 1)) {
-            [bound addObject:[NSNumber numberWithInt:index]];
-
-        }else if (alpha > 0 && alpha < c){
-            if (fabs(valueOut - 1) > toleranceValue/2 && valueOut != 1) {
+        if (alpha  == 0 && valueOut + toleranceValue > 1) {
+            
+        }else if (alpha  == c && valueOut - toleranceValue < 1){
+            
+        }else if (alpha > 0 && alpha < c && fabs(valueOut - 1) < toleranceValue  ){
+            
+        }else{
+            if (alpha > 0 && alpha < c ){
+                [nonBound addObject:[NSNumber numberWithInt:index]];
+            }else{
                 [bound addObject:[NSNumber numberWithInt:index]];
             }
         }
+    
+        
+//        if ((alpha  == 0 && valueOut + toleranceValue < 1) || (alpha  == c && valueOut - toleranceValue > 1)) {
+//            [bound addObject:[NSNumber numberWithInt:index]];
+//
+//        }else if (fabs(valueOut - 1) < toleranceValue )
+//        {
+//             if (alpha <= 0 && alpha >= c ){
+//                [nonBound addObject:[NSNumber numberWithInt:index]];
+//            }
+//        }else if (fabs(valueOut - 1) > toleranceValue ){
+//            if (alpha > 0 && alpha < c ){
+//                [nonBound addObject:[NSNumber numberWithInt:index]];
+//            }
+//        }
     }
     
-    completeBlock(bound,nonBound);
+    if ([bound count] + [nonBound count] == 0) {
+        return YES;
+    }else{
+        return NO;
+    }
+   
 }
 
-- (void)getReadyUpadteAlpha1
+- (BOOL)checkAlphaOutOfKKT:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi aryAlpha:(NSMutableArray *)alphaAry wAry:(NSMutableArray *)wAry b:(double)b valueC:(double)c
 {
+    double valueWtX,valueOut;
+    double alpha;
+    
+    
+    
+    
+    //nonBound：在aryXi 不符合KKT條件並且不在邊界上的index
+    //bound：在aryXi 不符合KKT條件並且在邊界上的index
+    for (int index = 0 ; index < [aryXi count] ; index++) {
+        
+        valueWtX = 0.0;
+        alpha = [[alphaAry objectAtIndex:index] doubleValue];
+        for (int xIndex = 0; xIndex < [[aryXi objectAtIndex:0] count]; xIndex ++) {
+            
+            
+            valueWtX = valueWtX + [[[aryXi objectAtIndex:index] objectAtIndex:xIndex] doubleValue] * [[wAry objectAtIndex:xIndex]  doubleValue];
+        }
+        valueOut = [[aryYi objectAtIndex:index] intValue] * (valueWtX + b);
+        
+        if (alpha  == 0 && valueOut + toleranceValue > 1) {
+            
+        }else if (alpha  == c && valueOut - toleranceValue < 1){
+            
+        }else if (alpha > 0 && alpha < c && fabs(valueOut - 1) < toleranceValue  ){
+            
+        }else{
+            if (alpha > 0 && alpha < c ){
+                return NO;
+            }else{
+                return NO;
+            }
+        }
+        
+        
+
+    }
+    return YES;
+
     
 }
 
-- (void)getReadyUpadteAlpha2
+- (int)getReadyUpadteAlpha1:(NSMutableArray *)unKKTAry aryXi:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi alpheAry:(NSMutableArray *)alpheAry
 {
+    double maxEi = 0,tempValue;
+    int aryIndex = 0;
     
+    //計算擁有最大的|Ei|
+    for (int index = 0; index < [unKKTAry count]; index++) {
+        
+        tempValue = [self calculateE:aryXi aryYi:aryYi aryAlpha:alpheAry index:[[unKKTAry objectAtIndex:index] intValue] bias:bias];
+        
+        if (fabs(tempValue) > maxEi) {
+            aryIndex = index;
+        }
+    }
+    
+    //回傳他在傳進來unKKTAry中的Index
+    return aryIndex;
+}
+
+- (int)getReadyUpadteAlpha2:(NSMutableArray *)unKKTAry aryXi:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi alpheAry:(NSMutableArray *)alpheAry alpheI:(int)alpheI
+{
+    double maxEiEj = 0,tempEiEj,tempEiValue,tempEjValue;
+    int aryIndex = 0;
+    
+    tempEiValue = [self calculateE:aryXi aryYi:aryYi aryAlpha:alpheAry index:alpheI bias:bias];
+
+    
+    for (int index = 0; index < [unKKTAry count]; index++) {
+        
+        tempEjValue = [self calculateE:aryXi aryYi:aryYi aryAlpha:alpheAry index:[[unKKTAry objectAtIndex:index] intValue] bias:bias];
+        
+        tempEiEj = fabs(tempEiValue - tempEjValue);
+
+        
+        if (tempEiEj > maxEiEj) {
+            maxEiEj = fabs(tempEiValue - tempEjValue);
+            aryIndex = index;
+        }
+    }
+    
+    return aryIndex;
 }
 
 //更新Alpha2
@@ -158,10 +474,10 @@
     
     if ((y1 * y2) == 1) {
         
-        if (0 > alpha2Old + alpha1 - c) {
+        if (0 > alpha2Old + alpha1 + c) {
             minValue = 0;
         }else{
-            minValue = alpha2Old + alpha1 - c;
+            minValue = alpha2Old + alpha1 + c;
         }
         
         if (c < alpha2Old + alpha1) {
@@ -206,8 +522,8 @@
 
 #pragma mark - calculate Method
 
-//計算W
-- (double)calculateW:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi aryAlpha:(NSMutableArray *)alphaAry
+//計算Wa
+- (double)calculateWa:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi aryAlpha:(NSMutableArray *)alphaAry
 {
     double sumAlpha = 0.0;
     double sumIJ = 0.0;
@@ -223,6 +539,22 @@
     }
     
     return Wa = sumAlpha - sumIJ/2;
+}
+
+//更新W
+- (NSMutableArray *)updateW:(NSMutableArray *)wAry alpha1New:(double)alpha1New oldAlpha1:(double)oldAlpha1 alpha2New:(double)alpha2New oldAlpha2:(double)oldAlpha2 yi:(int)yi xi:(NSMutableArray *)xi yj:(int)yj xj:(NSMutableArray *)xj
+{
+    double updateWi = 0.0;
+    NSMutableArray *wNew = [wAry mutableCopy];
+    
+    for (int inputX = 0; inputX < [wAry count]; inputX ++) {
+        
+        updateWi = [[wNew objectAtIndex:inputX] doubleValue] + (alpha1New - oldAlpha1) * yi * [[xi objectAtIndex:inputX] doubleValue] + (alpha2New - oldAlpha2) * yj * [[xj objectAtIndex:inputX] doubleValue];
+        
+        [wNew replaceObjectAtIndex:inputX withObject:[NSNumber numberWithFloat:updateWi]];
+    }
+    
+    return wNew;
 }
 
 //更新誤差值bias
@@ -283,9 +615,9 @@
     double valueXiTXj,valueEi = 0.0;
     for (int indexJ = 0; indexJ < [aryXi count] ; indexJ ++) {
         valueXiTXj = 0.0;
-        valueXiTXj  = [self calculateXiTXj:[aryXi objectAtIndex:index] j:[aryXi objectAtIndex:indexJ]];
+        valueXiTXj  = [self calculateXiTXj:[aryXi objectAtIndex:indexJ] j:[aryXi objectAtIndex:index]];
         
-        valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] floatValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
+        valueEi = valueEi + ([[alphaAry objectAtIndex:indexJ] doubleValue] * [[aryYi objectAtIndex:indexJ] intValue] *  valueXiTXj);
     }
     
     valueEi = valueEi + b - [[aryYi objectAtIndex:index] intValue];
