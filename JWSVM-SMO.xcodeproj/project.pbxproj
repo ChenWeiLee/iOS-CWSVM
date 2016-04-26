@@ -10,6 +10,7 @@
 		EC0BFB441C1F32840030334D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0BFB431C1F32840030334D /* ViewController.m */; };
 		ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB371D1C19C8F60013884E /* CWSMO.m */; };
 		ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB37201C19C9170013884E /* CWSVMManager.m */; };
+		ECB1C5081CCFCEB80009BD4D /* CWKernelAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */; };
 		ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A111B9AD7AF00F420D3 /* main.m */; };
 		ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ECFA6A141B9AD7AF00F420D3 /* AppDelegate.m */; };
 		ECFA6A1B1B9AD7AF00F420D3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECFA6A191B9AD7AF00F420D3 /* Main.storyboard */; };
@@ -35,6 +36,8 @@
 		ECAB371D1C19C8F60013884E /* CWSMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSMO.m; sourceTree = "<group>"; };
 		ECAB371F1C19C9170013884E /* CWSVMManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSVMManager.h; sourceTree = "<group>"; };
 		ECAB37201C19C9170013884E /* CWSVMManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSVMManager.m; sourceTree = "<group>"; };
+		ECB1C5061CCFCEB80009BD4D /* CWKernelAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWKernelAlgorithm.h; sourceTree = "<group>"; };
+		ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWKernelAlgorithm.m; sourceTree = "<group>"; };
 		ECFA6A0C1B9AD7AF00F420D3 /* JWSVM-SMO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JWSVM-SMO.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECFA6A101B9AD7AF00F420D3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ECFA6A111B9AD7AF00F420D3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -108,6 +111,8 @@
 			children = (
 				ECFA6A101B9AD7AF00F420D3 /* Info.plist */,
 				ECFA6A111B9AD7AF00F420D3 /* main.m */,
+				ECB1C5061CCFCEB80009BD4D /* CWKernelAlgorithm.h */,
+				ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 			files = (
 				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
 				ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */,
+				ECB1C5081CCFCEB80009BD4D /* CWKernelAlgorithm.m in Sources */,
 				ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */,
 				ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */,
 				EC0BFB441C1F32840030334D /* ViewController.m in Sources */,
