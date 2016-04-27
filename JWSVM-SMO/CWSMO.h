@@ -32,6 +32,6 @@ typedef enum kernelType{
 - (id)init;
 - (id)initWithKernelMethod:(kernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c;
 
-- (void)startTrain:(NSMutableArray *)aryXi aryYi:(NSMutableArray *)aryYi;
+- (void)startTrain:(NSMutableArray <NSMutableArray *>*)aryXi aryYi:(NSMutableArray *)aryYi;
 
 @end
