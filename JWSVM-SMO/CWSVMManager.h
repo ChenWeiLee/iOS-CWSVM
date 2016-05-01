@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
-
-
 @interface CWSVMManager : NSObject
 
 @end
