@@ -147,12 +147,9 @@
 //確認該點是否符合KKT條件
 - (BOOL)checkKKTWithPoint:(NSMutableArray *)x y:(NSInteger)y alpha:(double)alpha
 {
-    double valueWtX = 0.0,valueOut = 0.0;
+    double valueOut = 0.0;
     
-    for (int index = 0; index < [x count]; index = index + 1) {
-        valueWtX = valueWtX + [[x objectAtIndex:index] doubleValue] * [[w objectAtIndex:index]  doubleValue];
-    }
-    valueOut = y * (valueWtX + bias);
+    valueOut = y * ([_kernelMethod algorithmWithData:w data2:x] +bias);
     
     if (alpha  == 0 && valueOut + toleranceValue >= 1) {
         return YES;
@@ -166,7 +163,7 @@
     
 }
 
-//
+//選擇搭配的第二筆數據
 - (SVMDataPoint *)selectSecondUpadtePointWithoutPoint:(SVMDataPoint *)point
 {
     NSInteger selectPoint = 0;
@@ -197,11 +194,11 @@
     
     int maxIndex = startIndex;
     double maxError = 0.0, tempError = 0.0;
-    double pointE = [point getErrorWithBias:bias points:_points kernelType:_methodType];
+    double pointE = [point getErrorWithBias:bias w:w kernelType:_methodType];
     
     for (int index = startIndex; index < [_points count] ; index = index + 1) {
         SVMDataPoint *tempPoint = [_points objectAtIndex:index];
-        double tempE = [tempPoint getErrorWithBias:bias points:_points kernelType:_methodType];
+        double tempE = [tempPoint getErrorWithBias:bias w:w kernelType:_methodType];
         tempError = fabs(pointE - tempE);
         
         if (tempError > maxError) {
@@ -219,8 +216,8 @@
 {
     double alpha2New;
     double K11 = 0, K22 = 0, K12 = 0;
-    double e1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
-    double e2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
+    double e1 = [point1 getErrorWithBias:bias w:w kernelType:_methodType];
+    double e2 = [point2 getErrorWithBias:bias w:w kernelType:_methodType];
     
     
     K11 = [_kernelMethod algorithmWithData:point1.x data2:point1.x];
@@ -258,10 +255,10 @@
             minValue = point2.alpha - point1.alpha;
         }
         
-        if (cValue < cValue - point2.alpha + point1.alpha) {
+        if (cValue < cValue + point2.alpha - point1.alpha) {
             maxValue = cValue;
         }else{
-            maxValue = cValue - point2.alpha + point1.alpha;
+            maxValue = cValue + point2.alpha - point1.alpha;
         }
     }
     
@@ -305,8 +302,8 @@
     double b1New = 0.0,b2New = 0.0;
     double y1a1Value =  point1.y * (alpha1New - point1.alpha);
     double y2a2Value =  point2.y * (alpha2New - point2.alpha);
-    double oldE1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
-    double oldE2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
+    double oldE1 = [point1 getErrorWithBias:bias w:w kernelType:_methodType];
+    double oldE2 = [point2 getErrorWithBias:bias w:w kernelType:_methodType];
     
     b1New = bias - oldE1 - y1a1Value * [_kernelMethod algorithmWithData:point1.x data2:point1.x] - y2a2Value * [_kernelMethod algorithmWithData:point1.x data2:point2.x];
     

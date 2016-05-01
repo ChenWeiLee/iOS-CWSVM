@@ -18,7 +18,7 @@
 
 - (id)initWithX:(NSMutableArray *)x expectations:(NSInteger)y;
 
-- (double)getErrorWithBias:(double)bias points:(NSMutableArray <SVMDataPoint *>*)points kernelType:(KernelType)type;
+- (double)getErrorWithBias:(double)bias w:(NSMutableArray *)w kernelType:(KernelType)type;
 - (void)updateAlpha:(double)newAlpha;
 
 @end
