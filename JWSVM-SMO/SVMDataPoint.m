@@ -34,11 +34,15 @@
 }
 
 
-- (double)getErrorWithBias:(double)bias w:(NSMutableArray *)w kernelType:(KernelType)type
+- (double)getErrorWithBias:(double)bias points:(NSMutableArray <SVMDataPoint *>*)points kernelType:(KernelType)type
 {
     _kernel.kernelAlgorithm = type;
-    double valueEi = [_kernel algorithmWithData:_x data2:w] + bias - _y;
+    double valueEi = 0;
+    for (SVMDataPoint *point in points) {
+      valueEi  =  valueEi + point.y * point.alpha * [_kernel algorithmWithData:_x data2:point.x];
+    }
 
+    valueEi = valueEi + bias - _y;
     return valueEi;
 }
 

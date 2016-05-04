@@ -16,6 +16,9 @@
 @property (nonatomic, strong) NSMutableArray <SVMDataPoint *>*points;
 @property (nonatomic, strong) NSMutableArray *expectations;
 
+@property (nonatomic) double targetValue;
+@property (nonatomic) double targetNewValue;
+
 @end
 
 @implementation CWSMO
@@ -91,18 +94,20 @@
         
     }
 
+    BOOL trainCompleted  = YES;
+    _targetValue           = 0;
+    _targetNewValue        = 0;
     
     //外圍迭代，當迭代到最大還未收斂，則強制收斂
     for (int sprint = 0; sprint < iteration; sprint = sprint +1) {
-        BOOL trainCompleted  = YES;
-
+        trainCompleted = YES;
         //這邊採用啟發式方法來做
         for (int tour = 0; tour < [_points count] ; tour = tour +1) {
             
             SVMDataPoint *point1 = [_points objectAtIndex:tour];
             
             //尋找到第一筆不符合KKT條件
-            if (![self checkKKTWithPoint:point1.x y:point1.y alpha:point1.alpha]) {
+            if (![self checkKKTWithPoint:point1]) {
                 
                 trainCompleted = NO;
                 
@@ -130,13 +135,8 @@
             
         }
         
-        NSLog(@"W:%@",w);
-        NSLog(@"bias:%lf",bias);
-        
-        if (trainCompleted) {
-            
-            
-            NSLog(@"Finish");
+        if (trainCompleted || [self stopSVMIteration]) {
+            NSLog(@"Weight:%@ Bias:%lf",w,bias);
             return;
         }
     }
@@ -145,17 +145,24 @@
 }
 
 //確認該點是否符合KKT條件
-- (BOOL)checkKKTWithPoint:(NSMutableArray *)x y:(NSInteger)y alpha:(double)alpha
+- (BOOL)checkKKTWithPoint:(SVMDataPoint *)point
 {
     double valueOut = 0.0;
     
-    valueOut = y * ([_kernelMethod algorithmWithData:w data2:x] +bias);
+    //    valueOut = point.y * [point getErrorWithBias:bias points:_points kernelType:_methodType];
+    //以下結果跟上述一樣
+    for (int index = 0; index < [point.x count]; index = index + 1) {
+        valueOut = valueOut + [[point.x objectAtIndex:index] doubleValue] * [[w objectAtIndex:index] doubleValue];
+    }
     
-    if (alpha  == 0 && valueOut + toleranceValue >= 1) {
+    valueOut = point.y * (valueOut +bias);
+    
+    
+    if (point.alpha  == 0 && valueOut + toleranceValue >= 1) {
         return YES;
-    }else if (alpha  == cValue && valueOut - toleranceValue <= 1){
+    }else if (point.alpha  == cValue && valueOut - toleranceValue <= 1){
         return YES;
-    }else if (alpha > 0 && alpha < cValue && fabs(valueOut - 1) < toleranceValue  ){
+    }else if (point.alpha > 0 && point.alpha < cValue && fabs(valueOut - 1) < toleranceValue  ){
         return YES;
     }else{
         return NO;
@@ -194,11 +201,11 @@
     
     int maxIndex = startIndex;
     double maxError = 0.0, tempError = 0.0;
-    double pointE = [point getErrorWithBias:bias w:w kernelType:_methodType];
+    double pointE = [point getErrorWithBias:bias points:_points kernelType:_methodType];
     
     for (int index = startIndex; index < [_points count] ; index = index + 1) {
         SVMDataPoint *tempPoint = [_points objectAtIndex:index];
-        double tempE = [tempPoint getErrorWithBias:bias w:w kernelType:_methodType];
+        double tempE = [tempPoint getErrorWithBias:bias points:_points kernelType:_methodType];
         tempError = fabs(pointE - tempE);
         
         if (tempError > maxError) {
@@ -216,15 +223,15 @@
 {
     double alpha2New;
     double K11 = 0, K22 = 0, K12 = 0;
-    double e1 = [point1 getErrorWithBias:bias w:w kernelType:_methodType];
-    double e2 = [point2 getErrorWithBias:bias w:w kernelType:_methodType];
+    double e1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
+    double e2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
     
     
     K11 = [_kernelMethod algorithmWithData:point1.x data2:point1.x];
     K22 = [_kernelMethod algorithmWithData:point2.x data2:point2.x];
     K12 = [_kernelMethod algorithmWithData:point1.x data2:point2.x];
     
-    alpha2New = point2.alpha + point2.y * (e1 - e2) / (K11 + K22 - 2*K12);
+    alpha2New = point2.alpha + ((point2.y * (e1 - e2)) / (K11 + K22 - 2*K12));
     
     return alpha2New;
 }
@@ -302,8 +309,8 @@
     double b1New = 0.0,b2New = 0.0;
     double y1a1Value =  point1.y * (alpha1New - point1.alpha);
     double y2a2Value =  point2.y * (alpha2New - point2.alpha);
-    double oldE1 = [point1 getErrorWithBias:bias w:w kernelType:_methodType];
-    double oldE2 = [point2 getErrorWithBias:bias w:w kernelType:_methodType];
+    double oldE1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
+    double oldE2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
     
     b1New = bias - oldE1 - y1a1Value * [_kernelMethod algorithmWithData:point1.x data2:point1.x] - y2a2Value * [_kernelMethod algorithmWithData:point1.x data2:point2.x];
     
@@ -316,6 +323,38 @@
     }else{
         bias = (b2New + b1New)/2;
     }
+}
+
+
+//終止條件
+//當我的目標函式變化小於設定的閥值時即終止
+//可參考：https://zh.wikipedia.org/wiki/序列最小优化算法
+- (BOOL)stopSVMIteration
+{
+    double tempValue = 0.0;
+    for (int index = 0; index < [w count]; index = index + 1) {
+        _targetNewValue = _targetNewValue + [[w objectAtIndex:index] doubleValue] * [[w objectAtIndex:index] doubleValue];
+    }
+    _targetNewValue = _targetNewValue/2;
+    
+    for (SVMDataPoint *point in _points) {
+        for (int index = 0; index < [w count]; index = index + 1) {
+            tempValue = tempValue + [[w objectAtIndex:index] doubleValue] * [[point.x objectAtIndex:index] doubleValue];
+        }
+        
+        tempValue = point.y * (tempValue +bias) - 1;
+    }
+    
+    _targetNewValue = _targetNewValue - tempValue;
+    
+    
+    if (_targetValue != 0 && (_targetNewValue -_targetValue)/_targetNewValue < toleranceValue) {
+        return YES;
+    }else{
+        _targetValue = _targetNewValue;
+        return NO;
+    }
+    
 }
 
 @end

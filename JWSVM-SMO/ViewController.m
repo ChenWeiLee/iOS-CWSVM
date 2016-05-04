@@ -24,9 +24,11 @@
     inputXAry = [NSMutableArray new];
     inputYAry = [NSMutableArray new];
  
-    [inputXAry addObjectsFromArray:@[@[@0,@1],@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0],@[@4,@0]]];
-    [inputYAry addObjectsFromArray:@[@-1,@-1,@-1,@1,@1,@1]];
+    [inputXAry addObjectsFromArray:@[@[@0,@5],@[@0,@0],@[@2,@2],@[@2,@0],@[@3,@0]]];
+    [inputYAry addObjectsFromArray:@[@-1,@-1,@-1,@1,@1]];
 
+//    [inputXAry addObjectsFromArray:@[@[@1,@0],@[@3,@2],@[@3,@0],@[@4,@0]]];
+//    [inputYAry addObjectsFromArray:@[@-1,@-1,@1,@1]];
     
     CWSMO *smo = [[CWSMO alloc] initWithKernelMethod:KernelTypeLinear sigmaValue:1 maxIterations:1000 relaxation:1];
     [smo startTrain:inputXAry aryYi:inputYAry];
