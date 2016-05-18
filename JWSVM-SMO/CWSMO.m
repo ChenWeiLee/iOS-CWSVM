@@ -242,31 +242,11 @@
     double maxValue,minValue;
     
     if ((point1.y * point2.y) == 1) {
-        
-        if (0 > point2.alpha + point1.alpha - cValue) {
-            minValue = 0;
-        }else{
-            minValue = point2.alpha + point1.alpha - cValue;
-        }
-        
-        if (cValue < point2.alpha + point1.alpha) {
-            maxValue = cValue;
-        }else{
-            maxValue = point2.alpha + point1.alpha;
-        }
-        
+        minValue = MAX(0, point2.alpha + point1.alpha - cValue);
+        maxValue = MIN(cValue, point2.alpha + point1.alpha);
     }else{
-        if (0 > point2.alpha - point1.alpha) {
-            minValue = 0;
-        }else{
-            minValue = point2.alpha - point1.alpha;
-        }
-        
-        if (cValue < cValue + point2.alpha - point1.alpha) {
-            maxValue = cValue;
-        }else{
-            maxValue = cValue + point2.alpha - point1.alpha;
-        }
+        minValue = MAX(0, point2.alpha - point1.alpha);
+        maxValue = MIN(cValue, cValue + point2.alpha - point1.alpha);
     }
     
     //如果 alpha2New 不在既定範圍中的話，將 alpha2New 限制在最大可接受值
