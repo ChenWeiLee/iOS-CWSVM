@@ -8,12 +8,12 @@
 
 #import "CWSMO.h"
 
-#import "SVMDataPoint.h"
+#import "CWPattern.h"
 
 @interface CWSMO ()
 
 @property (nonatomic, strong) CWKernelAlgorithm *kernelMethod;
-@property (nonatomic, strong) NSMutableArray <SVMDataPoint *>*points;
+@property (nonatomic, strong) NSMutableArray <CWPattern *>*points;
 @property (nonatomic, strong) NSMutableArray *expectations;
 
 @property (nonatomic) double targetValue;
@@ -39,7 +39,7 @@
         iteration = 1000;
         toleranceValue = 0.0001;
         cValue = 10;
-        _Tag = @"0";
+        _tag = @"0";
         
     }
     return self;
@@ -90,7 +90,7 @@
     
     for (int index = 0; index < [aryXi count]; index = index + 1) {
         
-        [_points addObject:[[SVMDataPoint alloc] initWithX:[aryXi objectAtIndex:index] expectations:[[aryYi objectAtIndex:index] integerValue]]];
+        [_points addObject:[[CWPattern alloc] initWithX:[aryXi objectAtIndex:index] expectations:[[aryYi objectAtIndex:index] integerValue]]];
         
     }
 
@@ -104,14 +104,15 @@
         //這邊採用啟發式方法來做
         for (int tour = 0; tour < [_points count] ; tour = tour +1) {
             
-            SVMDataPoint *point1 = [_points objectAtIndex:tour];
+            CWPattern *point1 = [_points objectAtIndex:tour];
             
             //尋找到第一筆不符合KKT條件
             if (![self checkKKTWithPoint:point1]) {
                 
                 trainCompleted = NO;
                 
-                SVMDataPoint *point2 = [self selectSecondUpadtePointWithoutPoint:point1];
+                //使用Random的方式來挑選第二更新點
+                CWPattern *point2 = [self randomSelectSecondUpdatePoint:point1];
                 NSInteger index2 = [_points indexOfObject:point2];
                 
                 //更新選擇point2點的alpha
@@ -135,7 +136,8 @@
             
         }
         
-        if (trainCompleted || [self stopSVMIteration]) {
+        //目前只使用KKT條件來做終止條件
+        if (trainCompleted) {
             NSLog(@"Weight:%@ Bias:%lf",w,bias);
             return;
         }
@@ -144,67 +146,42 @@
 
 }
 
-//確認該點是否符合KKT條件
-- (BOOL)checkKKTWithPoint:(SVMDataPoint *)point
-{
-    double valueOut = 0.0;
-    
-    //    valueOut = point.y * [point getErrorWithBias:bias points:_points kernelType:_methodType];
-    //以下結果跟上述一樣
-    for (int index = 0; index < [point.x count]; index = index + 1) {
-        valueOut = valueOut + [[point.x objectAtIndex:index] doubleValue] * [[w objectAtIndex:index] doubleValue];
-    }
-    
-    valueOut = point.y * (valueOut +bias);
-    
-    
-    if (point.alpha  == 0 && valueOut + toleranceValue >= 1) {
-        return YES;
-    }else if (point.alpha  == cValue && valueOut - toleranceValue <= 1){
-        return YES;
-    }else if (point.alpha > 0 && point.alpha < cValue && fabs(valueOut - 1) < toleranceValue  ){
-        return YES;
-    }else{
-        return NO;
-    }
-    
-}
+#pragma mark - 選擇第二筆更新數據
 
-//選擇搭配的第二筆數據
-- (SVMDataPoint *)selectSecondUpadtePointWithoutPoint:(SVMDataPoint *)point
+//選擇搭配的第二筆數據 |E1 - E2|
+- (CWPattern *)selectSecondUpadtePointWithoutPoint:(CWPattern *)point
 {
-    NSInteger selectPoint = 0;
     NSInteger pointOneIndex = [_points indexOfObject:point];
     if (![point isEqual:[_points lastObject]]) {
         //如果不為最後一筆的話，就找出|E1-E2|最大的
-        selectPoint = [self selectMaxErrorIndexWithPoint:point startIndex:(int)(pointOneIndex +1)];
+        return [self selectMaxErrorIndexWithPoint:point startIndex:(int)(pointOneIndex +1)];
     }else{
         //如果為最後一筆的話，就隨機挑點來當作第二調整點
-        selectPoint = arc4random() % [_points count];
-        if (selectPoint == pointOneIndex) {
-            
-            //如果挑到的點不為最後一筆的話，就統一加一
-            //如果挑到的點為最後一筆的話，就減一
-            if (selectPoint != [_points count]-1) {
-                selectPoint = selectPoint +1;
-            }else{
-                selectPoint = selectPoint -1;
-            }
-        }
+        return [self randomSelectSecondUpdatePoint:point];
     }
+    
+}
+//隨機挑點
+- (CWPattern *)randomSelectSecondUpdatePoint:(CWPattern *)point
+{
+    NSInteger pointIndex = [_points indexOfObject:point];
+    NSInteger selectPoint = 0;
+    do {
+        selectPoint = arc4random() % [_points count];
+    } while (selectPoint == pointIndex);
     
     return [_points objectAtIndex:selectPoint];
 }
 
 //找出Array中符合誤差值|E1-E2|最大者
-- (int)selectMaxErrorIndexWithPoint:(SVMDataPoint *)point startIndex:(int)startIndex{
+- (CWPattern *)selectMaxErrorIndexWithPoint:(CWPattern *)point startIndex:(int)startIndex{
     
     int maxIndex = startIndex;
     double maxError = 0.0, tempError = 0.0;
     double pointE = [point getErrorWithBias:bias points:_points kernelType:_methodType];
     
     for (int index = startIndex; index < [_points count] ; index = index + 1) {
-        SVMDataPoint *tempPoint = [_points objectAtIndex:index];
+        CWPattern *tempPoint = [_points objectAtIndex:index];
         double tempE = [tempPoint getErrorWithBias:bias points:_points kernelType:_methodType];
         tempError = fabs(pointE - tempE);
         
@@ -214,12 +191,12 @@
         }
     }
 
-    return maxIndex;
+    return [_points objectAtIndex:maxIndex];
 }
 
-
+#pragma mark - 更新第二筆數據
 //更新Alpha2
-- (double)updateAlpha2Withpoint2:(SVMDataPoint *)point2 x1Index:(SVMDataPoint *)point1
+- (double)updateAlpha2Withpoint2:(CWPattern *)point2 x1Index:(CWPattern *)point1
 {
     double alpha2New;
     double K11 = 0, K22 = 0, K12 = 0;
@@ -237,7 +214,7 @@
 }
 
 //確認新的alpha2在我們要的範圍內
-- (double)checkRangeWithNewAlpha:(double)alpha2New point1:(SVMDataPoint *)point1 point2:(SVMDataPoint *)point2
+- (double)checkRangeWithNewAlpha:(double)alpha2New point1:(CWPattern *)point1 point2:(CWPattern *)point2
 {
     double maxValue,minValue;
     
@@ -258,18 +235,19 @@
         return alpha2New;
     }
 }
+#pragma mark - 更新第一筆數據
 
 //更新Alpha1
-- (double)updateAlpha1WithPoint1:(SVMDataPoint *)point1 point2:(SVMDataPoint *)point2 alpha2New:(double)alpha2New
+- (double)updateAlpha1WithPoint1:(CWPattern *)point1 point2:(CWPattern *)point2 alpha2New:(double)alpha2New
 {
     double alpha1New = point1.alpha + (point2.y * point1.y * (point2.alpha - alpha2New));
     
     return alpha1New;
 }
 
-
-//更新W
-- (void)updateWWithPoint1:(SVMDataPoint *)point1 alpha1New:(double)alpha1New point2:(SVMDataPoint *)point2 alpha2New:(double)alpha2New
+#pragma mark - 更新權重及偏權值
+//更新權重W
+- (void)updateWWithPoint1:(CWPattern *)point1 alpha1New:(double)alpha1New point2:(CWPattern *)point2 alpha2New:(double)alpha2New
 {
     double updateWi = 0.0;
     
@@ -283,7 +261,7 @@
 }
 
 //更新誤差值bias
-- (void)updateBiasWithPoint1:(SVMDataPoint *)point1 alpha1New:(double)alpha1New point2:(SVMDataPoint *)point2 alpha2New:(double)alpha2New
+- (void)updateBiasWithPoint1:(CWPattern *)point1 alpha1New:(double)alpha1New point2:(CWPattern *)point2 alpha2New:(double)alpha2New
 {
     
     double b1New = 0.0,b2New = 0.0;
@@ -305,6 +283,23 @@
     }
 }
 
+#pragma mark - 終止條件
+
+//確認該點是否符合KKT條件
+- (BOOL)checkKKTWithPoint:(CWPattern *)point
+{
+    double checkValue = 0.0;
+    
+    // yi * Ei
+    checkValue = point.y * [point getErrorWithBias:bias points:_points kernelType:_methodType];
+    
+    if ((checkValue < -toleranceValue && point.alpha < cValue) || (checkValue > toleranceValue && point.alpha > 0)) {
+        return NO;
+    }else{
+        return YES;
+    }
+    
+}
 
 //終止條件
 //當我的目標函式變化小於設定的閥值時即終止
@@ -317,7 +312,7 @@
     }
     _targetNewValue = _targetNewValue/2;
     
-    for (SVMDataPoint *point in _points) {
+    for (CWPattern *point in _points) {
         for (int index = 0; index < [w count]; index = index + 1) {
             tempValue = tempValue + [[w objectAtIndex:index] doubleValue] * [[point.x objectAtIndex:index] doubleValue];
         }

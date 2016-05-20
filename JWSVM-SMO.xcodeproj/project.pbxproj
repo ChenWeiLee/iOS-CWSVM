@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EC0BFB441C1F32840030334D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0BFB431C1F32840030334D /* ViewController.m */; };
-		EC85803B1CD125F4001DFCC7 /* SVMDataPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = EC85803A1CD125F4001DFCC7 /* SVMDataPoint.m */; };
+		EC85803B1CD125F4001DFCC7 /* CWPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = EC85803A1CD125F4001DFCC7 /* CWPattern.m */; };
 		ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB371D1C19C8F60013884E /* CWSMO.m */; };
 		ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB37201C19C9170013884E /* CWSVMManager.m */; };
 		ECB1C5081CCFCEB80009BD4D /* CWKernelAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */; };
@@ -33,8 +33,8 @@
 /* Begin PBXFileReference section */
 		EC0BFB421C1F32840030334D /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		EC0BFB431C1F32840030334D /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		EC8580391CD125F4001DFCC7 /* SVMDataPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVMDataPoint.h; sourceTree = "<group>"; };
-		EC85803A1CD125F4001DFCC7 /* SVMDataPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVMDataPoint.m; sourceTree = "<group>"; };
+		EC8580391CD125F4001DFCC7 /* CWPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWPattern.h; sourceTree = "<group>"; };
+		EC85803A1CD125F4001DFCC7 /* CWPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWPattern.m; sourceTree = "<group>"; };
 		ECAB371C1C19C8F60013884E /* CWSMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSMO.h; sourceTree = "<group>"; };
 		ECAB371D1C19C8F60013884E /* CWSMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWSMO.m; sourceTree = "<group>"; };
 		ECAB371F1C19C9170013884E /* CWSVMManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWSVMManager.h; sourceTree = "<group>"; };
@@ -72,6 +72,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC962C391CEF702300CDE30B /* SVM */ = {
+			isa = PBXGroup;
+			children = (
+				ECAB371F1C19C9170013884E /* CWSVMManager.h */,
+				ECAB37201C19C9170013884E /* CWSVMManager.m */,
+				EC962C3A1CEF703000CDE30B /* SMO */,
+			);
+			name = SVM;
+			sourceTree = "<group>";
+		};
+		EC962C3A1CEF703000CDE30B /* SMO */ = {
+			isa = PBXGroup;
+			children = (
+				ECAB371C1C19C8F60013884E /* CWSMO.h */,
+				ECAB371D1C19C8F60013884E /* CWSMO.m */,
+				ECB1C5061CCFCEB80009BD4D /* CWKernelAlgorithm.h */,
+				ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */,
+				EC8580391CD125F4001DFCC7 /* CWPattern.h */,
+				EC85803A1CD125F4001DFCC7 /* CWPattern.m */,
+			);
+			name = SMO;
+			sourceTree = "<group>";
+		};
 		ECFA6A031B9AD7AF00F420D3 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +116,7 @@
 		ECFA6A0E1B9AD7AF00F420D3 /* JWSVM-SMO */ = {
 			isa = PBXGroup;
 			children = (
+				EC962C391CEF702300CDE30B /* SVM */,
 				EC0BFB421C1F32840030334D /* ViewController.h */,
 				EC0BFB431C1F32840030334D /* ViewController.m */,
 				ECFA6A131B9AD7AF00F420D3 /* AppDelegate.h */,
@@ -101,10 +125,6 @@
 				ECFA6A1C1B9AD7AF00F420D3 /* Images.xcassets */,
 				ECFA6A1E1B9AD7AF00F420D3 /* LaunchScreen.xib */,
 				ECFA6A0F1B9AD7AF00F420D3 /* Supporting Files */,
-				ECAB371C1C19C8F60013884E /* CWSMO.h */,
-				ECAB371D1C19C8F60013884E /* CWSMO.m */,
-				ECAB371F1C19C9170013884E /* CWSVMManager.h */,
-				ECAB37201C19C9170013884E /* CWSVMManager.m */,
 			);
 			path = "JWSVM-SMO";
 			sourceTree = "<group>";
@@ -114,10 +134,6 @@
 			children = (
 				ECFA6A101B9AD7AF00F420D3 /* Info.plist */,
 				ECFA6A111B9AD7AF00F420D3 /* main.m */,
-				ECB1C5061CCFCEB80009BD4D /* CWKernelAlgorithm.h */,
-				ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */,
-				EC8580391CD125F4001DFCC7 /* SVMDataPoint.h */,
-				EC85803A1CD125F4001DFCC7 /* SVMDataPoint.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -241,7 +257,7 @@
 			files = (
 				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
 				ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */,
-				EC85803B1CD125F4001DFCC7 /* SVMDataPoint.m in Sources */,
+				EC85803B1CD125F4001DFCC7 /* CWPattern.m in Sources */,
 				ECB1C5081CCFCEB80009BD4D /* CWKernelAlgorithm.m in Sources */,
 				ECFA6A121B9AD7AF00F420D3 /* main.m in Sources */,
 				ECAB37211C19C9170013884E /* CWSVMManager.m in Sources */,

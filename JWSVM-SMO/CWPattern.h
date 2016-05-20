@@ -10,7 +10,7 @@
 
 #import "CWKernelAlgorithm.h"
 
-@interface SVMDataPoint : NSObject
+@interface CWPattern: NSObject
 
 @property (nonatomic, strong, readonly) NSMutableArray *x;
 @property (nonatomic, readonly) NSInteger y;
@@ -18,7 +18,7 @@
 
 - (id)initWithX:(NSMutableArray *)x expectations:(NSInteger)y;
 
-- (double)getErrorWithBias:(double)bias points:(NSMutableArray <SVMDataPoint *>*)points kernelType:(KernelType)type;
+- (double)getErrorWithBias:(double)bias points:(NSMutableArray <CWPattern *>*)points kernelType:(KernelType)type;
 - (void)updateAlpha:(double)newAlpha;
 
 @end

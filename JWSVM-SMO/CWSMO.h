@@ -19,7 +19,7 @@
     double cValue;
     int iteration;
 }
-@property (nonatomic, retain) NSString *Tag; //為了多分類用
+@property (nonatomic, retain) NSString *tag; //為了多分類用
 @property (nonatomic, readonly) double sigma;
 @property (nonatomic) KernelType methodType;
 

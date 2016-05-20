@@ -6,16 +6,16 @@
 //  Copyright © 2016年 Enoch. All rights reserved.
 //
 
-#import "SVMDataPoint.h"
+#import "CWPattern.h"
 
 
-@interface SVMDataPoint ()
+@interface CWPattern ()
 
 @property (nonatomic, strong) CWKernelAlgorithm *kernel;
 
 @end
 
-@implementation SVMDataPoint
+@implementation CWPattern
 
 
 - (id)initWithX:(NSMutableArray *)x expectations:(NSInteger)y
@@ -34,11 +34,11 @@
 }
 
 
-- (double)getErrorWithBias:(double)bias points:(NSMutableArray <SVMDataPoint *>*)points kernelType:(KernelType)type
+- (double)getErrorWithBias:(double)bias points:(NSMutableArray <CWPattern *>*)points kernelType:(KernelType)type
 {
     _kernel.kernelAlgorithm = type;
     double valueEi = 0;
-    for (SVMDataPoint *point in points) {
+    for (CWPattern *point in points) {
       valueEi  =  valueEi + point.y * point.alpha * [_kernel algorithmWithData:_x data2:point.x];
     }
 
