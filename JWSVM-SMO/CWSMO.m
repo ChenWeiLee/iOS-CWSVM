@@ -191,7 +191,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
         //這邊採用啟發式方法來做
         for (int tour = 0; tour < [_trainingPatterns count] ; tour = tour +1) {
             
-            CWPattern *point1 = [_trainingPatterns objectAtIndex:tour];
+            id<CWPatternErrorCalculator> point1 = [_trainingPatterns objectAtIndex:tour];
             
             //尋找到第一筆不符合KKT條件
             if (![self checkKKTWithPoint:point1]) {
@@ -199,7 +199,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
                 trainCompleted = NO;
                 
                 //使用Random的方式來挑選第二更新點
-                CWPattern *point2 = [self randomSelectSecondUpdatePoint:point1];
+                id<CWPatternErrorCalculator> point2 = [self randomSelectSecondUpdatePoint:point1];
                 NSInteger index2 = [_trainingPatterns indexOfObject:point2];
                 
                 //更新選擇point2點的alpha
@@ -235,7 +235,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 #pragma mark - 選擇第二筆更新數據
 
 //選擇搭配的第二筆數據 |E1 - E2|
-- (CWPattern *)selectSecondUpadtePointWithoutPoint:(CWPattern *)point
+- (id<CWPatternErrorCalculator>)selectSecondUpadtePointWithoutPoint:(id<CWPatternErrorCalculator>)point
 {
     NSInteger pointOneIndex = [_trainingPatterns indexOfObject:point];
     if (![point isEqual:[_trainingPatterns lastObject]]) {
@@ -248,7 +248,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
     
 }
 //隨機挑點
-- (CWPattern *)randomSelectSecondUpdatePoint:(CWPattern *)point
+- (id<CWPatternErrorCalculator>)randomSelectSecondUpdatePoint:(id<CWPatternErrorCalculator>)point
 {
     NSInteger pointIndex = [_trainingPatterns indexOfObject:point];
     NSInteger selectPoint = 0;
@@ -260,7 +260,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 }
 
 //找出Array中符合誤差值|E1-E2|最大者
-- (CWPattern *)selectMaxErrorIndexWithPoint:(id<CWPatternErrorCalculator>)point startIndex:(int)startIndex{
+- (id<CWPatternErrorCalculator>)selectMaxErrorIndexWithPoint:(id<CWPatternErrorCalculator>)point startIndex:(int)startIndex{
     
     int maxIndex = startIndex;
     double maxError = 0.0, tempError = 0.0;
@@ -268,7 +268,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
     double pointE = [point error:bias patterns:patterns];
     
     for (int index = startIndex; index < [_trainingPatterns count] ; index = index + 1) {
-        CWPattern *tempPoint = [_trainingPatterns objectAtIndex:index];
+        id<CWPatternErrorCalculator> tempPoint = [_trainingPatterns objectAtIndex:index];
         double tempE = [tempPoint error:bias patterns:patterns];
         tempError = fabs(pointE - tempE);
         
@@ -283,7 +283,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 
 #pragma mark - 更新第二筆數據
 //更新Alpha2
-- (double)updateAlpha2Withpoint2:(CWPattern *)point2 x1Index:(CWPattern *)point1
+- (double)updateAlpha2Withpoint2:(id<CWPatternErrorCalculator>)point2 x1Index:(id<CWPatternErrorCalculator>)point1
 {
     double alpha2New;
     double K11 = 0, K22 = 0, K12 = 0;
@@ -302,7 +302,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 }
 
 //確認新的alpha2在我們要的範圍內
-- (double)checkRangeWithNewAlpha:(double)alpha2New point1:(CWPattern *)point1 point2:(CWPattern *)point2
+- (double)checkRangeWithNewAlpha:(double)alpha2New point1:(id<CWPatternErrorCalculator>)point1 point2:(id<CWPatternErrorCalculator>)point2
 {
     double maxValue,minValue;
     
@@ -326,7 +326,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 #pragma mark - 更新第一筆數據
 
 //更新Alpha1
-- (double)updateAlpha1WithPoint1:(CWPattern *)point1 point2:(CWPattern *)point2 alpha2New:(double)alpha2New
+- (double)updateAlpha1WithPoint1:(id<CWPatternErrorCalculator>)point1 point2:(id<CWPatternErrorCalculator>)point2 alpha2New:(double)alpha2New
 {
     double alpha1New = point1.alpha  + (point2.targetValue  * point1.targetValue * (point2.alpha - alpha2New));
     
@@ -335,7 +335,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 
 #pragma mark - 更新權重及偏權值
 //更新權重W
-- (void)updateWWithPoint1:(CWPattern *)point1 alpha1New:(double)alpha1New point2:(CWPattern *)point2 alpha2New:(double)alpha2New
+- (void)updateWWithPoint1:(id<CWPatternErrorCalculator>)point1 alpha1New:(double)alpha1New point2:(id<CWPatternErrorCalculator>)point2 alpha2New:(double)alpha2New
 {
     double updateWi = 0.0;
     
@@ -349,7 +349,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 }
 
 //更新誤差值bias
-- (void)updateBiasWithPoint1:(CWPattern *)point1 alpha1New:(double)alpha1New point2:(CWPattern *)point2 alpha2New:(double)alpha2New
+- (void)updateBiasWithPoint1:(id<CWPatternErrorCalculator>)point1 alpha1New:(double)alpha1New point2:(id<CWPatternErrorCalculator>)point2 alpha2New:(double)alpha2New
 {
     
     double b1New = 0.0,b2New = 0.0;
@@ -376,7 +376,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
 #pragma mark - 終止條件
 
 //確認該點是否符合KKT條件
-- (BOOL)checkKKTWithPoint:(CWPattern *)point
+- (BOOL)checkKKTWithPoint:(id<CWPatternErrorCalculator>)point
 {
     double checkValue = 0.0;
     
