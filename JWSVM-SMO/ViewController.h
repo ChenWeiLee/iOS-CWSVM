@@ -11,6 +11,7 @@
 @interface ViewController : UIViewController
 {
     NSMutableArray *inputXAry, *inputYAry;
+    NSMutableArray *datas;
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CWKernelAlgorithm.h"
 
+@protocol CWPattern;
 @interface CWSMO : NSObject
 {
     NSMutableArray *w;
@@ -25,7 +26,10 @@
 
 - (id)init;
 - (id)initWithKernelMethod:(KernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c;
+- (void)startTrainingOneToOneWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns;
+- (void)startTrainingOneToOtherWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns;
 
-- (void)startTrain:(NSMutableArray <NSMutableArray *>*)aryXi aryYi:(NSMutableArray *)aryYi;
+- (void)startTrainingWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns;
+- (void)startTrainingWithData:(NSMutableArray <NSMutableArray *>*)aryXi aryYi:(NSMutableArray *)aryYi;
 
 @end

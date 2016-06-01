@@ -19,6 +19,8 @@ typedef NS_ENUM(NSInteger, KernelType) {
 @property (nonatomic) KernelType kernelAlgorithm;
 @property (nonatomic) double sigma;
 
+- (instancetype) initWithKernelType:(KernelType) kernelType sigma:(double)sigma;
+
 - (double)algorithmWithData:(NSMutableArray *)data data2:(NSMutableArray *)data2;
 
 @end

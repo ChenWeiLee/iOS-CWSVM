@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34DFD53C1CFEA44500650592 /* NSMutableArray+Copy.m in Sources */ = {isa = PBXBuildFile; fileRef = 34DFD53B1CFEA44500650592 /* NSMutableArray+Copy.m */; };
 		EC0BFB441C1F32840030334D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0BFB431C1F32840030334D /* ViewController.m */; };
 		EC85803B1CD125F4001DFCC7 /* CWPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = EC85803A1CD125F4001DFCC7 /* CWPattern.m */; };
 		ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */ = {isa = PBXBuildFile; fileRef = ECAB371D1C19C8F60013884E /* CWSMO.m */; };
@@ -31,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		34DFD53A1CFEA44500650592 /* NSMutableArray+Copy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+Copy.h"; sourceTree = "<group>"; };
+		34DFD53B1CFEA44500650592 /* NSMutableArray+Copy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+Copy.m"; sourceTree = "<group>"; };
 		EC0BFB421C1F32840030334D /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		EC0BFB431C1F32840030334D /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		EC8580391CD125F4001DFCC7 /* CWPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWPattern.h; sourceTree = "<group>"; };
@@ -91,6 +94,8 @@
 				ECB1C5071CCFCEB80009BD4D /* CWKernelAlgorithm.m */,
 				EC8580391CD125F4001DFCC7 /* CWPattern.h */,
 				EC85803A1CD125F4001DFCC7 /* CWPattern.m */,
+				34DFD53A1CFEA44500650592 /* NSMutableArray+Copy.h */,
+				34DFD53B1CFEA44500650592 /* NSMutableArray+Copy.m */,
 			);
 			name = SMO;
 			sourceTree = "<group>";
@@ -255,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34DFD53C1CFEA44500650592 /* NSMutableArray+Copy.m in Sources */,
 				ECFA6A151B9AD7AF00F420D3 /* AppDelegate.m in Sources */,
 				ECAB371E1C19C8F60013884E /* CWSMO.m in Sources */,
 				EC85803B1CD125F4001DFCC7 /* CWPattern.m in Sources */,

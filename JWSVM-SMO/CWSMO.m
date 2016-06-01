@@ -9,15 +9,30 @@
 #import "CWSMO.h"
 
 #import "CWPattern.h"
+#import "NSMutableArray+Copy.h"
+
+
+typedef NS_ENUM(NSInteger, MutableClassifyType) {
+    MutableClassifyTypeOneToOne,
+    MutableClassifyTypeOneToOther
+};
 
 @interface CWSMO ()
 
 @property (nonatomic, strong) CWKernelAlgorithm *kernelMethod;
-@property (nonatomic, strong) NSMutableArray <CWPattern *>*points;
+@property (nonatomic, strong) NSMutableArray <id<CWPatternErrorCalculator> > *trainingPatterns;
 @property (nonatomic, strong) NSMutableArray *expectations;
 
 @property (nonatomic) double targetValue;
 @property (nonatomic) double targetNewValue;
+
+@property (nonatomic, strong) NSMutableArray *mainPatterns;
+@property (nonatomic, strong) NSMutableArray *matchPatterns;
+
+@property (nonatomic) double mainTarget;
+@property (nonatomic) double matchTarget;
+
+@property (nonatomic) MutableClassifyType classifyType;
 
 @end
 
@@ -31,8 +46,11 @@
     if (self) {
         
         _kernelMethod = [CWKernelAlgorithm new];
-        _points = [NSMutableArray new];
+        _trainingPatterns = [NSMutableArray new];
         
+        _mainPatterns = [NSMutableArray new];
+        _matchPatterns = [NSMutableArray new];
+
         bias = -1;
         _methodType = KernelTypeLinear;
         _kernelMethod.sigma = 1.0;
@@ -40,7 +58,7 @@
         toleranceValue = 0.0001;
         cValue = 10;
         _tag = @"0";
-        
+
     }
     return self;
 }
@@ -68,32 +86,101 @@
 
 #pragma mark - Start Class SMO-Step Method
 
+- (double)classifyValueWithData:(id<CWPattern>)pattern
+{
+    double result = [self algorithmValue:pattern];
+    
+    switch (_classifyType) {
+        case MutableClassifyTypeOneToOne:
+        {
+            return result >= 0 ? _mainTarget : _matchTarget ;
+        }
+            break;
+        case MutableClassifyTypeOneToOther:
+        default:
+            return result;
+            break;
+    }
+    
+}
 
+- (double)algorithmValue:(id<CWPattern>)pattern
+{
+    return [_kernelMethod algorithmWithData:[pattern features] data2:w];
+}
 
 #pragma mark - Start Train SMO-Step Method
 
-- (void)startTrain:(NSMutableArray <NSMutableArray *>*)aryXi aryYi:(NSMutableArray *)aryYi
+- (void)startTrainingOneToOneWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns
 {
+    _classifyType = MutableClassifyTypeOneToOne;
+    
+    _mainTarget = [[tPatterns objectAtIndex:0] targetValue];
+    _matchTarget = [[fPatterns objectAtIndex:0] targetValue];
+    
+    [self startTrainingWithMainData:tPatterns otherData:fPatterns];
+}
+
+- (void)startTrainingOneToOtherWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns
+{
+    _classifyType = MutableClassifyTypeOneToOther;
+
+    [self startTrainingWithMainData:tPatterns otherData:fPatterns];
+}
+
+- (void)startTrainingWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns
+{
+    _mainPatterns  = [tPatterns deepCopy];
+    _matchPatterns = [fPatterns deepCopy];
+    
+    [_mainPatterns enumerateObjectsUsingBlock:^(id<CWPattern>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.targetValue = 1;
+    }];
+    
+    [_matchPatterns enumerateObjectsUsingBlock:^(id<CWPattern>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.targetValue = -1;
+    }];
+    
+    [_trainingPatterns addObjectsFromArray:_mainPatterns];
+    [_trainingPatterns addObjectsFromArray:_matchPatterns];
+    
+    [self initWithTrainData];
+    [self trainingData];
+}
+
+- (void)startTrainingWithData:(NSMutableArray <NSMutableArray *>*)aryXi aryYi:(NSMutableArray *)aryYi
+{
+    
     if ([aryXi count] == 0) {
         return;
     }
     
+    for (int index = 0; index < [aryXi count]; index = index + 1) {
+        
+        [_trainingPatterns addObject:[[CWPattern alloc] initWithX:[aryXi objectAtIndex:index] expectations:[[aryYi objectAtIndex:index] integerValue] alpha:0.0]];
+        
+    }
+    
+    [self initWithTrainData];
+    [self trainingData];
+}
+
+- (void)initWithTrainData
+{
     //如果這個CWSMO NSObject是一個新的話，就初始化所有的值
     if (w == nil && bias == -1) {
         w = [NSMutableArray new];
         bias = 0;
         
-        for (int j = 0; j < [[aryXi objectAtIndex:0] count]; j = j + 1) {
+        for (int j = 0; j < [[[_trainingPatterns objectAtIndex:0] features] count]; j = j + 1) {
             [w addObject:@"0"];
         }
     }
-    
-    for (int index = 0; index < [aryXi count]; index = index + 1) {
-        
-        [_points addObject:[[CWPattern alloc] initWithX:[aryXi objectAtIndex:index] expectations:[[aryYi objectAtIndex:index] integerValue]]];
-        
-    }
+}
 
+- (void)trainingData
+{
+    
     BOOL trainCompleted  = YES;
     _targetValue           = 0;
     _targetNewValue        = 0;
@@ -102,9 +189,9 @@
     for (int sprint = 0; sprint < iteration; sprint = sprint +1) {
         trainCompleted = YES;
         //這邊採用啟發式方法來做
-        for (int tour = 0; tour < [_points count] ; tour = tour +1) {
+        for (int tour = 0; tour < [_trainingPatterns count] ; tour = tour +1) {
             
-            CWPattern *point1 = [_points objectAtIndex:tour];
+            CWPattern *point1 = [_trainingPatterns objectAtIndex:tour];
             
             //尋找到第一筆不符合KKT條件
             if (![self checkKKTWithPoint:point1]) {
@@ -113,7 +200,7 @@
                 
                 //使用Random的方式來挑選第二更新點
                 CWPattern *point2 = [self randomSelectSecondUpdatePoint:point1];
-                NSInteger index2 = [_points indexOfObject:point2];
+                NSInteger index2 = [_trainingPatterns indexOfObject:point2];
                 
                 //更新選擇point2點的alpha
                 double newPointAlpha2 = [self updateAlpha2Withpoint2:point2 x1Index:point1];
@@ -129,8 +216,8 @@
                 [point1 updateAlpha:newPointAlpha1];
                 [point2 updateAlpha:newPointAlpha2];
                 
-                [_points replaceObjectAtIndex:tour withObject:point1];
-                [_points replaceObjectAtIndex:index2 withObject:point2];
+                [_trainingPatterns replaceObjectAtIndex:tour withObject:point1];
+                [_trainingPatterns replaceObjectAtIndex:index2 withObject:point2];
                 
             }
             
@@ -142,7 +229,6 @@
             return;
         }
     }
-    
 
 }
 
@@ -151,8 +237,8 @@
 //選擇搭配的第二筆數據 |E1 - E2|
 - (CWPattern *)selectSecondUpadtePointWithoutPoint:(CWPattern *)point
 {
-    NSInteger pointOneIndex = [_points indexOfObject:point];
-    if (![point isEqual:[_points lastObject]]) {
+    NSInteger pointOneIndex = [_trainingPatterns indexOfObject:point];
+    if (![point isEqual:[_trainingPatterns lastObject]]) {
         //如果不為最後一筆的話，就找出|E1-E2|最大的
         return [self selectMaxErrorIndexWithPoint:point startIndex:(int)(pointOneIndex +1)];
     }else{
@@ -164,25 +250,26 @@
 //隨機挑點
 - (CWPattern *)randomSelectSecondUpdatePoint:(CWPattern *)point
 {
-    NSInteger pointIndex = [_points indexOfObject:point];
+    NSInteger pointIndex = [_trainingPatterns indexOfObject:point];
     NSInteger selectPoint = 0;
     do {
-        selectPoint = arc4random() % [_points count];
+        selectPoint = arc4random() % [_trainingPatterns count];
     } while (selectPoint == pointIndex);
     
-    return [_points objectAtIndex:selectPoint];
+    return [_trainingPatterns objectAtIndex:selectPoint];
 }
 
 //找出Array中符合誤差值|E1-E2|最大者
-- (CWPattern *)selectMaxErrorIndexWithPoint:(CWPattern *)point startIndex:(int)startIndex{
+- (CWPattern *)selectMaxErrorIndexWithPoint:(id<CWPatternErrorCalculator>)point startIndex:(int)startIndex{
     
     int maxIndex = startIndex;
     double maxError = 0.0, tempError = 0.0;
-    double pointE = [point getErrorWithBias:bias points:_points kernelType:_methodType];
+    NSMutableArray <id<CWPattern>> * patterns = [_trainingPatterns mutableCopy];
+    double pointE = [point error:bias patterns:patterns];
     
-    for (int index = startIndex; index < [_points count] ; index = index + 1) {
-        CWPattern *tempPoint = [_points objectAtIndex:index];
-        double tempE = [tempPoint getErrorWithBias:bias points:_points kernelType:_methodType];
+    for (int index = startIndex; index < [_trainingPatterns count] ; index = index + 1) {
+        CWPattern *tempPoint = [_trainingPatterns objectAtIndex:index];
+        double tempE = [tempPoint error:bias patterns:patterns];
         tempError = fabs(pointE - tempE);
         
         if (tempError > maxError) {
@@ -191,7 +278,7 @@
         }
     }
 
-    return [_points objectAtIndex:maxIndex];
+    return [_trainingPatterns objectAtIndex:maxIndex];
 }
 
 #pragma mark - 更新第二筆數據
@@ -200,15 +287,16 @@
 {
     double alpha2New;
     double K11 = 0, K22 = 0, K12 = 0;
-    double e1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
-    double e2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
+    NSMutableArray <id<CWPattern>> * patterns = [_trainingPatterns mutableCopy];
+    double e1 = [point1 error:bias patterns:patterns];
+    double e2 = [point2 error:bias patterns:patterns];
     
     
-    K11 = [_kernelMethod algorithmWithData:point1.x data2:point1.x];
-    K22 = [_kernelMethod algorithmWithData:point2.x data2:point2.x];
-    K12 = [_kernelMethod algorithmWithData:point1.x data2:point2.x];
+    K11 = [_kernelMethod algorithmWithData:point1.features data2:point1.features];
+    K22 = [_kernelMethod algorithmWithData:point2.features data2:point2.features];
+    K12 = [_kernelMethod algorithmWithData:point1.features data2:point2.features];
     
-    alpha2New = point2.alpha + ((point2.y * (e1 - e2)) / (K11 + K22 - 2*K12));
+    alpha2New = point2.alpha + (([point2 targetValue]* (e1 - e2)) / (K11 + K22 - 2*K12));
     
     return alpha2New;
 }
@@ -218,7 +306,7 @@
 {
     double maxValue,minValue;
     
-    if ((point1.y * point2.y) == 1) {
+    if (([point1 targetValue] * [point2 targetValue]) == 1) {
         minValue = MAX(0, point2.alpha + point1.alpha - cValue);
         maxValue = MIN(cValue, point2.alpha + point1.alpha);
     }else{
@@ -240,7 +328,7 @@
 //更新Alpha1
 - (double)updateAlpha1WithPoint1:(CWPattern *)point1 point2:(CWPattern *)point2 alpha2New:(double)alpha2New
 {
-    double alpha1New = point1.alpha + (point2.y * point1.y * (point2.alpha - alpha2New));
+    double alpha1New = point1.alpha  + (point2.targetValue  * point1.targetValue * (point2.alpha - alpha2New));
     
     return alpha1New;
 }
@@ -253,7 +341,7 @@
     
     for (int inputX = 0; inputX < [w count]; inputX ++) {
         
-        updateWi = [[w objectAtIndex:inputX] doubleValue] + (alpha1New - point1.alpha) * point1.y * [[point1.x objectAtIndex:inputX] doubleValue] + (alpha2New - point2.alpha) * point2.y * [[point2.x objectAtIndex:inputX] doubleValue];
+        updateWi = [[w objectAtIndex:inputX] doubleValue] + (alpha1New - point1.alpha) * point1.targetValue * [[point1.features objectAtIndex:inputX] doubleValue] + (alpha2New - point2.alpha) * point2.targetValue * [[point2.features objectAtIndex:inputX] doubleValue];
         
         [w replaceObjectAtIndex:inputX withObject:[NSNumber numberWithDouble:updateWi]];
     }
@@ -265,14 +353,16 @@
 {
     
     double b1New = 0.0,b2New = 0.0;
-    double y1a1Value =  point1.y * (alpha1New - point1.alpha);
-    double y2a2Value =  point2.y * (alpha2New - point2.alpha);
-    double oldE1 = [point1 getErrorWithBias:bias points:_points kernelType:_methodType];
-    double oldE2 = [point2 getErrorWithBias:bias points:_points kernelType:_methodType];
+    double y1a1Value =  point1.targetValue * (alpha1New - point1.alpha);
+    double y2a2Value =  point2.targetValue * (alpha2New - point2.alpha);
+    NSMutableArray <id<CWPattern>> * patterns = [_trainingPatterns mutableCopy];
+
+    double oldE1 = [point1 error:bias patterns:patterns];
+    double oldE2 = [point2 error:bias patterns:patterns];
     
-    b1New = bias - oldE1 - y1a1Value * [_kernelMethod algorithmWithData:point1.x data2:point1.x] - y2a2Value * [_kernelMethod algorithmWithData:point1.x data2:point2.x];
+    b1New = bias - oldE1 - y1a1Value * [_kernelMethod algorithmWithData:point1.features data2:point1.features] - y2a2Value * [_kernelMethod algorithmWithData:point1.features data2:point2.features];
     
-    b2New = bias - oldE2 - y1a1Value * [_kernelMethod algorithmWithData:point1.x data2:point2.x] - y2a2Value * [_kernelMethod algorithmWithData:point2.x data2:point2.x];
+    b2New = bias - oldE2 - y1a1Value * [_kernelMethod algorithmWithData:point1.features data2:point2.features] - y2a2Value * [_kernelMethod algorithmWithData:point2.features data2:point2.features];
     
     if (alpha1New > 0 && alpha1New < cValue) {
         bias = b1New;
@@ -290,8 +380,9 @@
 {
     double checkValue = 0.0;
     
+    NSMutableArray <id<CWPattern>> * patterns = [_trainingPatterns mutableCopy];
     // yi * Ei
-    checkValue = point.y * [point getErrorWithBias:bias points:_points kernelType:_methodType];
+    checkValue = point.targetValue * [point error:bias patterns:patterns];
     
     if ((checkValue < -toleranceValue && point.alpha < cValue) || (checkValue > toleranceValue && point.alpha > 0)) {
         return NO;
@@ -312,12 +403,12 @@
     }
     _targetNewValue = _targetNewValue/2;
     
-    for (CWPattern *point in _points) {
+    for (CWPattern *point in _trainingPatterns) {
         for (int index = 0; index < [w count]; index = index + 1) {
-            tempValue = tempValue + [[w objectAtIndex:index] doubleValue] * [[point.x objectAtIndex:index] doubleValue];
+            tempValue = tempValue + [[w objectAtIndex:index] doubleValue] * [[point.features objectAtIndex:index] doubleValue];
         }
         
-        tempValue = point.y * (tempValue +bias) - 1;
+        tempValue = point.targetValue * (tempValue +bias) - 1;
     }
     
     _targetNewValue = _targetNewValue - tempValue;

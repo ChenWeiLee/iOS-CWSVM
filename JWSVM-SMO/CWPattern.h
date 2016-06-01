@@ -10,15 +10,25 @@
 
 #import "CWKernelAlgorithm.h"
 
-@interface CWPattern: NSObject
+@protocol CWPattern <NSObject>
 
-@property (nonatomic, strong, readonly) NSMutableArray *x;
-@property (nonatomic, readonly) NSInteger y;
-@property (nonatomic, readonly) double alpha;
+@property (nonatomic) double targetValue; //記得要使用@synthesize
 
-- (id)initWithX:(NSMutableArray *)x expectations:(NSInteger)y;
-
-- (double)getErrorWithBias:(double)bias points:(NSMutableArray <CWPattern *>*)points kernelType:(KernelType)type;
+- (double)alpha;
 - (void)updateAlpha:(double)newAlpha;
+
+- (NSMutableArray <NSNumber *>*)features;
+
+@end
+
+@protocol CWPatternErrorCalculator <NSObject, CWPattern>
+
+- (double)error:(double)bias patterns:(NSMutableArray<id<CWPattern>> *)patterns;
+
+@end
+
+@interface CWPattern: NSObject<CWPatternErrorCalculator, NSCopying>
+
+- (id)initWithX:(NSArray *)x expectations:(NSInteger)y alpha:(double)alpha;
 
 @end

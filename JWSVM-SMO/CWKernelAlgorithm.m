@@ -19,13 +19,21 @@
 
 - (instancetype)init
 {
-    self = [super init];
+    self = [self initWithKernelType:KernelTypeLinear sigma:1.0];
     
     if (self) {
-        //default
-        _kernelAlgorithm = KernelTypeLinear;
-        _sigma = 1.0;
+        //
 
+    }
+    return self;
+}
+
+
+- (instancetype)initWithKernelType:(KernelType)kernelType sigma:(double)sigma{
+    self = [super init];
+    if (self) {
+        _kernelAlgorithm = kernelType;
+        _sigma = sigma;
     }
     return self;
 }
@@ -59,6 +67,7 @@
     
     return linearResult;
 }
+
 
 //https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man3/exp.3.html
 - (double)kernelRBF
