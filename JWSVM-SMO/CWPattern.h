@@ -10,7 +10,7 @@
 
 #import "CWKernelAlgorithm.h"
 
-@protocol CWPattern <NSObject>
+@protocol CWPattern <NSObject, NSCopying> //請實作deep copy
 
 @property (nonatomic) double targetValue; //記得要使用@synthesize
 

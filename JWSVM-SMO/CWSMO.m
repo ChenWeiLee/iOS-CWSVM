@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
     return self;
 }
 
-- (id)initWithKernelMethod:(KernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c;
+- (id)initWithKernelMethod:(KernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c toleranceValue:(double)toler
 {
     self = [self init];
     
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, MutableClassifyType) {
         }
         
         iteration = iterations;
-        
+        toleranceValue = toler;
         cValue = c;
     }
     

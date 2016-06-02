@@ -65,7 +65,7 @@
         [otherDatas removeObjectsInArray:obj];
 
         
-        CWSMO *smo = [[CWSMO alloc] initWithKernelMethod:_kernelType sigmaValue:_sigma maxIterations:_iteration relaxation:_toleranceValue];
+        CWSMO *smo = [[CWSMO alloc] initWithKernelMethod:_kernelType sigmaValue:_sigma maxIterations:_iteration relaxation:_c toleranceValue:_toleranceValue];
         [smo startTrainingWithMainData:obj otherData:otherDatas];
         
         [_svms addObject:smo];

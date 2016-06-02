@@ -25,7 +25,7 @@
 @property (nonatomic) KernelType methodType;
 
 - (id)init;
-- (id)initWithKernelMethod:(KernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c;
+- (id)initWithKernelMethod:(KernelType)kernelType sigmaValue:(double)sigmaValue maxIterations:(int)iterations relaxation:(double)c toleranceValue:(double)toler;
 - (void)startTrainingOneToOneWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns;
 - (void)startTrainingOneToOtherWithMainData:(NSMutableArray <id<CWPattern>>*)tPatterns otherData:(NSMutableArray <id<CWPattern>>*)fPatterns;
 
